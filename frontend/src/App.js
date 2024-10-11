@@ -5,25 +5,29 @@ import { Home, Error} from './pages/index';
 import { AnnouncementForm, Announcements } from './announcements/index';
 
 
+
+
 function App() {
   return (
-    <Box sx={{display: 'flex', flexDirection: 'column', marginTop: 5, marginBottom: 5, padding: 10, justifyContent: 'center', alignItems: 'center'}}>
-      <Box>
-        <div className="App">
-          <Routes>
-            <Route path='/' element={<Home/>}/>
+
+     <Box sx={{display: 'flex', flexDirection: 'column', marginTop: 5, marginBottom: 5, padding: 10, justifyContent: 'center', alignItems: 'center'}}>
+       <Box>
+         <div className="App">
+           <Routes>
+             <Route path='/' element={<Home/>}/>
 
 
-              <Route path='*' element={<Error/>}/>
+             <Route path='*' element={<Error/>}/>
 
 
-              <Route path='/announcement-form' element={<AnnouncementForm/>}/>
-            <Route path='/announcements' element={<Announcements/>}/>
+             <Route path='/announcement-form' element={<AnnouncementForm/>}/>
+             <Route path='/announcements' element={<Announcements/>}/>
 
-          </Routes>
-        </div>
-      </Box>
-    </Box>
+           </Routes>
+         </div>
+       </Box>
+     </Box>
+
   );
 }
 

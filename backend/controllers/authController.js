@@ -8,7 +8,7 @@ const SECRET_KEY = process.env.SECRET_KEY || 'a1a2ebd0aa735c8df9a48f8878333f78c7
 // Register a new user
 exports.register = async (req, res) => {
     try {
-        const { username, password } = req.body;
+        const {username, password} = req.body;
         const hashedPassword = await bcrypt.hash(password, 14);
 
         const user = new userModel({username, password: hashedPassword});
@@ -25,22 +25,30 @@ exports.register = async (req, res) => {
 
 exports.login = async (req, res) => {
     try {
-        const { username, password } = req.body;
-        const user = await userModel.findOne({ username })
-        if(!user) {
+        const {username, password} = req.body;
+        if (!username || !password) {
             return res.send({
-                message: 'Username not found',
+                message: 'Username and password are required',
+            })
+        }
+
+        const user = await userModel.findOne({username})
+        if (!user) {
+            return res.send({
+                message: 'username isn\'t found',
             })
         }
 
         const isMatch = await bcrypt.compare(password, user.password);
-        if(!isMatch) {
+        if (!isMatch) {
             return res.send({
                 error: 'Invalid username or password',
             })
         }
+        const token = jwt.sign({userId: user._id}, SECRET_KEY, {expiresIn: 60 * 60 * 1000});
+        res.json({token})
 
-        const token = jwt.sign({ userId: user._id }, SECRET_KEY, { expiresIn: 60 * 60 * 1000 } );
+
 
     } catch (error) {
         return res.send({

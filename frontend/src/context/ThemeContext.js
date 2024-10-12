@@ -1,19 +1,24 @@
-import { createContext, useState, useMemo } from 'react';
+import { createContext, useState, useMemo, useEffect } from 'react';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import CssBaseline from '@mui/material/CssBaseline';
 
 export const ThemeContext = createContext();
 
 export const ThemeContextProvider = ({ children }) => {
-    const [darkMode, setDarkMode] = useState(() => {
-        const savedMode = localStorage.getItem('darkModel');
-        return savedMode ? JSON.parse(savedMode) : false;
-    })
+    const [darkMode, setDarkMode] = useState(false);
+
+    useEffect(() => {
+            const savedMode = localStorage.getItem('darkMode');
+            if(savedMode !== null) {
+                setDarkMode(JSON.parse(savedMode));
+            }
+    }, []);
 
     const toggleDarkMode = () => {
         setDarkMode((prevMode) => {
-            localStorage.setItem('darkModel', JSON.stringify(prevMode));
-            return !prevMode;
+            const newMode = !prevMode;
+            localStorage.setItem('darkMode', JSON.stringify(newMode));
+            return newMode;
         });
     };
 
@@ -26,10 +31,10 @@ export const ThemeContextProvider = ({ children }) => {
                 defaultProps: {
                     fullWidth: true,
                     margin: 'normal'
-                }
-            }
-        }
-    }), [darkMode])
+                },
+            },
+        },
+    }), [darkMode]);
 
     return (
         <ThemeContext.Provider value={{ darkMode, toggleDarkMode }}>

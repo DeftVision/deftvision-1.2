@@ -1,33 +1,39 @@
 import { Box } from '@mui/material'
-import { Routes, Route } from 'react-router-dom';
+import { Route, Routes } from 'react-router-dom';
 
-import { Home, Error} from './pages/index';
-import { AnnouncementForm, Announcements } from './announcements/index';
-import Navbar from './components/Navbar';
-
+import { Error, Home } from './pages/index';
+import { Dashboard, Login, Navbar } from './components/index';
+import { PrivateRoute } from './utilities/index';
+import EvaluationForm from './evaluations/EvaluationForm'
 
 
 function App() {
-  return (
+    return (
 
-     <Box>
-       <Navbar />
-         <Box>
-         <div className="App">
-           <Routes>
-             <Route path='/home' element={<Home/>}/>
+        <Box sx={{marginBottom: 10}}>
+            <Navbar/>
+            <Box>
+                <div className="App">
+                    <Routes>
+                        <Route path='/login' element={<Login />} />
 
-             <Route path='*' element={<Error/>}/>
+                        <Route path='/home' element={<Home/>}/>
+                        <Route path='*' element={<Error/>}/>
 
-             <Route path='/announcement-form' element={<AnnouncementForm/>}/>
-             <Route path='/announcements' element={<Announcements/>}/>
+                        <Route path='/evaluations' element={<EvaluationForm/>} />
 
-           </Routes>
-         </div>
-       </Box>
-     </Box>
+                        <Route path='/dashboard' element={
+                            <PrivateRoute>
+                                <Dashboard />
+                            </PrivateRoute>
+                        } />
 
-  );
+                    </Routes>
+                </div>
+            </Box>
+        </Box>
+
+    );
 }
 
 export default App;

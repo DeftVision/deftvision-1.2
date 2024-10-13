@@ -1,2 +1,3 @@
 export { default as Login } from './Login';
-export { default as NavigationHeader } from './NavigationHeader';
+export { default as Navbar } from './Navbar';
+export { default as Dashboard } from './Dashboard';

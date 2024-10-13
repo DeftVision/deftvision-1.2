@@ -1,5 +1,6 @@
-import {Box, Modal, Stack, Typography} from '@mui/material'
-import {useState} from 'react'
+import { Box, Modal, Stack, Typography } from '@mui/material'
+import { useState, useEffect } from 'react'
+import { useTheme } from '@mui/material/styles'
 import {
     BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer,
     PieChart, Pie, Cell, LineChart, Line
@@ -10,59 +11,97 @@ const COLORS = ['#0088FE', '#00C49F', '#FFBB28', '#FF8042'];
 
 
 export default function Dashboard() {
+    const theme = useTheme();
     const [selectedEvaluation, setSelectedEvaluation] = useState(null);
+    const [evaluations, setEvaluations] = useState([])
     const [openModal, setOpenModal] = useState(false);
+
+    const upsellData = [
+        { name: 'Upsell', value: evaluations.filter(e => e.upsell).length },
+        { name: 'No Upsell', value: evaluations.filter(e => !e.upsell).length },
+    ]
+
+    const finalScoresData = evaluations.map(evaluation => ({
+        date: new Date(evaluation.date).toLocaleDateString(),
+        finalScore: evaluation.finalScore,
+    }));
 
     const handleClose = () => {
         setOpenModal(false);
         setSelectedEvaluation(null);
     }
 
-    //      example evaluation Data
-    const evaluationData = [
-        {id: 1, date: '2024-01-10', score: 60, type: 'Performance'},
-        {id: 2, date: '2024-02-15', score: 52, type: 'Communication'},
-        {id: 3, date: '2024-03-20', score: 35, type: 'Teamwork'},
-        {id: 4, date: '2024-04-05', score: 78, type: 'Performance'},
-        // Add more data as needed
-    ];
+    useEffect(() => {
+        const getEvaluations = async () => {
+            try {
+                const response = await fetch('http://localhost:5000/api/evaluation/evaluations', {
+                    method: 'GET',
+                    headers: { 'Content-Type' : 'application/json'}
+                })
+                const data = await response.json();
+                setEvaluations(data.evaluations);
+            } catch (error) {
+                console.error('Error loading evaluations:', error)
+            }
+        };
+        getEvaluations();
+    }, []);
+
 
     //      calculate the average score
-    const averageScore = evaluationData.reduce((acc, curr) => acc + curr.score, 0);
+    const averageFinalScore = evaluations.length > 0
+    ? evaluations.reduce((acc, curr) => acc + curr.finalScore, 0) / evaluations.length : 0;
 
-    // Example data for pie chart (grouping scores)
-    const scoreRanges = [
-        {name: '0-50', value: evaluationData.filter(e => e.score <= 50).length},
-        {name: '51-75', value: evaluationData.filter(e => e.score > 50 && e.score <= 75).length},
-        {name: '76-100', value: evaluationData.filter(e => e.score > 75 && e.score <= 100).length},
-    ];
-
+    const scoresData = evaluations.map(evaluation => ({
+        location: evaluation.location,
+        foodScore: evaluation.location,
+        cleanScore: evaluation.cleanScore,
+        serviceScore: evaluation.serviceScore,
+        date: new Date(evaluation.date).toLocaleDateString(),
+    }))
 
     return (
         <Box sx={{padding: 3}}>
             <Stack direction='column' spacing={3}>
 
                 {/*     WELCOME AND OVERVIEW      */}
-                <Typography variant='overline' sx={{fontSize: '2rem', justifyContent: 'center'}} gutterBottom>
+                <Typography variant='overline' sx={{fontSize: '1.5rem', justifyContent: 'center'}} gutterBottom>
                     dashboard overview
                 </Typography>
-                <Typography variant='overline' sx={{fontSize: '1rem', justifyContent: 'center'}} gutterBottom>
-                    average score: {averageScore.toFixed(2)}
+                <Typography variant='overline' sx={{fontSize: '.75rem', justifyContent: 'center'}} gutterBottom>
+                    average final score: {averageFinalScore.toFixed(2)}
                 </Typography>
 
                 {/*   BARCHART FOR SCORES OVER TIME   */}
-                <Typography variant='overline' sx={{fontSize: '1rem', justifyContent: 'center'}} gutterBottom>
+                <Typography variant='overline' sx={{fontSize: '.75rem', justifyContent: 'center'}} gutterBottom>
                     scores over time
                 </Typography>
                 <ResponsiveContainer width='100%' height={300}>
-                    <BarChart data={evaluationData} margin={{ top: 20, right: 30, left: 20, bottom: 5}}>
+                    <BarChart data={scoresData}>
                         <CartesianGrid strokeDasharray={ '3 3'} />
-                        <XAxis dataKey='date' />
+                        <XAxis dataKey='location' />
                         <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="score" fill="#8884d8" onClick={(data) => { setSelectedEvaluation(data); setOpenModal(true); }} />>
+                        <Tooltip content={({ payload }) => {
+                            if(payload && payload.length) {
+                                const { location, date, foodScore, cleanScore, serviceScore } = payload[0].payload;
+                                return (
+                                    <div style={{ backgroundColor: '#fff', padding: '10px', borderRadius: '5px', border: '1px solid #ccc'}}>
+                                        <p>{`Location : ${location}`}</p>
+                                        <p>{`Date : ${date}`}</p>
+                                        <p>{`Food Score : ${foodScore}`}</p>
+                                        <p>{`Clean Score : ${cleanScore}`}</p>
+                                        <p>{`Service Score : ${serviceScore}`}</p>
+                                    </div>
+                                )
+                            }
+                            return null;
+                        }}/>
+                        <Bar dataKey="foodScore" fill="#8884d8" />>
+                        <Bar dataKey="cleanScore" fill="#8884d8" />>
+                        <Bar dataKey="serviceScore" fill="#8884d8" />>
                     </BarChart>
                 </ResponsiveContainer>
+
 
                 {/*     PIE CHART FOR SCORE DISTRIBUTION    */}
                 <Typography variant='overline' gutterBottom sx={{marginTop: 4, fontSize: '1rem'}}>
@@ -71,14 +110,16 @@ export default function Dashboard() {
                 <ResponsiveContainer width='100%' height={300}>
                     <PieChart>
                         <Pie
-                            data={scoreRanges}
+                            data={upsellData}
+                            dataKey='value'
+                            nameKey='name'
                             cx={'50%'}
                             cy={'50%'}
                             outerRadius={100}
                             fill='#8884d8'
-                            dataKey='value'
-                            label>
-                            {scoreRanges.map((entry, index) => (
+                            label
+                        >
+                            {upsellData.map((entry, index) => (
                                 <Cell key={`cell-${index}`} fill={COLORS[index % COLORS.length]} />
                                 ))}
                         </Pie>
@@ -87,28 +128,36 @@ export default function Dashboard() {
                 </ResponsiveContainer>
 
                 {/*     LINE CHART FOR SCORES TREND     */}
-                <Typography variant='overline' gutterBottom sx={{marginTop: 4, fontSize: '1rem'}}>
+                <Typography variant='overline' gutterBottom sx={{marginTop: 4, fontSize: '.75rem'}}>
                     score trend over time
                 </Typography>
                 <ResponsiveContainer width='100%' height={300}>
-                    <LineChart data={evaluationData} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
+                    <LineChart data={finalScoresData}>
                     <CartesianGrid strokeDasharray='3 3' />
                     <XAxis dataKey='date' />
                     <YAxis />
                     <Tooltip />
-                    <Line type='monotone' dataKey='score' stroke='#82ca9d' />
+                    <Line type='monotone' dataKey='finalScore' stroke='#82ca9d' />
                     </LineChart>
                 </ResponsiveContainer>
 
                 {/*     MODAL FOR EVALUATION DRILL-DOWN     */}
                 <Modal open={openModal} onClose={handleClose}>
-                    <Box sx={{ padding: 4, backgroundColor: 'white', margin: 'auto', marginTop: 10, width: 300 }}>
+                    <Box sx={{
+                        padding: 4,
+                        backgroundColor: theme.palette.background.paper,
+                        color: theme.palette.text.primary,
+                        margin: 'auto',
+                        marginTop: 10,
+                        width: 300 }}
+                    >
                         <Stack direction='column' spacing={1}>
-                            <Typography variant='overline' gutterButton>
+                            <Typography variant='overline' gutterBottom>
                                 evaluation details
                             </Typography>
                             {selectedEvaluation && (
                                 <Typography variant='overline'>
+                                    <strong>Location:</strong> {selectedEvaluation.location} <br />
                                     <strong>Type:</strong> {selectedEvaluation.type} <br />
                                     <strong>Date:</strong> {selectedEvaluation.date} <br />
                                     <strong>Score:</strong> {selectedEvaluation.score}

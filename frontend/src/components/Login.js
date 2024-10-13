@@ -1,7 +1,7 @@
 import { useState} from 'react'
 import { Alert, Box, Button, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode }  from 'jwt-decode';
 
 
 export default function Login() {
@@ -38,15 +38,14 @@ export default function Login() {
                 const decodedToken = jwtDecode(token);
                 const userId = decodedToken.userId;
                 localStorage.setItem('userId', userId);
+
                 setSuccess(true);
-
-
                 navigate('/dashboard')
             } else {
                 setError(data.error || 'login failed miserably')
             }
         } catch (error) {
-            setError('oops... wait a few seconds, then give it another college try.');
+            setError('oops... wait a few seconds try again');
         }
     };
 

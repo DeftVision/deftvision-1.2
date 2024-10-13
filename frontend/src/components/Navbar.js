@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
-import {AnalyticsOutlined, AnnouncementOutlined, SpaceDashboardOutlined, HomeOutlined, PeopleOutlined, LoginOutlined} from '@mui/icons-material';
+import {AnalyticsOutlined, AnnouncementOutlined, Brightness4, Brightness7, SpaceDashboardOutlined, HomeOutlined, PeopleOutlined, LoginOutlined} from '@mui/icons-material';
 import {ThemeContext} from '../context/ThemeContext';
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {useTheme} from '@mui/material/styles'
@@ -126,7 +126,7 @@ export default function Navbar() {
                         </>
                     )}
                     <Button color='inherit' onClick={toggleDarkMode}>
-                        {darkMode ? 'Light Mode' : 'Dark Mode'}
+                        {darkMode ? <Brightness7 /> : <Brightness4 />}
                     </Button>
                 </Toolbar>
             </AppBar>

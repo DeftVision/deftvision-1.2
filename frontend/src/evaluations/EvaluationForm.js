@@ -50,12 +50,21 @@ export default function EvaluationForm() {
         }
 
         try {
+            const token = localStorage.getItem('token');
+            if(!token) {
+                setError('User not authenticated, please log in.')
+                return;
+            }
+
             const userId = localStorage.getItem('userId');
+            if(!userId) {
+                setError('User ID not found')
+                return;
+            }
+
             const response = await fetch('http://localhost:5000/api/evaluation/new', {
                 method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json'
-                },
+                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify({
                     ...evaluationData,
                     userId,
@@ -75,7 +84,6 @@ export default function EvaluationForm() {
             } else {
                 setError(data.error || 'Submission failed. Try again.');
             }
-
         } catch (error) {
             setError('An error occurred. Try again.');
         }
@@ -105,7 +113,7 @@ export default function EvaluationForm() {
                     name='date'
                     value={evaluationData.date}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     inputlabelprops={{ shrink: true }}
                     required
@@ -116,7 +124,7 @@ export default function EvaluationForm() {
                         name="location"
                         label="location"
                         variant="outlined"
-                        fullWidth
+                        fullWidth={true}
                         margin="none"
                         value={evaluationData.location}
                         onChange={handleFieldChange}
@@ -134,7 +142,7 @@ export default function EvaluationForm() {
                     label='cashier'
                     value={evaluationData.cashier}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -146,7 +154,7 @@ export default function EvaluationForm() {
                     onChange={handleFieldChange}
                     multiline
                     maxRows={5}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -156,7 +164,7 @@ export default function EvaluationForm() {
                     label='wait time'
                     value={evaluationData.waitTime}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -194,7 +202,7 @@ export default function EvaluationForm() {
                     label='food score'
                     value={evaluationData.foodScore}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -204,7 +212,7 @@ export default function EvaluationForm() {
                     label='service score'
                     value={evaluationData.serviceScore}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -214,7 +222,7 @@ export default function EvaluationForm() {
                     label='clean score'
                     value={evaluationData.cleanScore}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -224,7 +232,7 @@ export default function EvaluationForm() {
                     label='final Score'
                     value={evaluationData.finalScore}
                     onChange={handleFieldChange}
-                    fullWidth
+                    fullWidth={true}
                     margin='none'
                     required
                 />

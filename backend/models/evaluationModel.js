@@ -57,6 +57,14 @@ const evaluationSchema = new mongoose.Schema({
         type: Number,
         required: true,
     },
+    downloadUrl: {
+        type: String,
+        required: true,
+    },
+    uniqueFileName: {
+        type: String,
+        required: true,
+    },
 }, {timestamps: true});
 
 const evaluationModel = mongoose.model("Evaluation", evaluationSchema)

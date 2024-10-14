@@ -1,5 +1,6 @@
 const evaluationModel = require ('../models/evaluationModel')
 
+
 exports.getEvaluations = async (req, res) => {
     try {
         const evaluations = await evaluationModel.find({});
@@ -20,7 +21,6 @@ exports.getEvaluations = async (req, res) => {
             error,
         })
     }
-
 }
 
 exports.getEvaluation = async (req, res) => {
@@ -63,9 +63,11 @@ exports.newEvaluation = async (req, res) => {
             repeatOrder,
             idManager,
             waitTime,
+            uniqueFileName,
+            downloadUrl,
         } = req.body;
 
-        if(!userId || !foodScore || !cleanScore || !serviceScore || !finalScore || !date || !location || !cashier || !waitTime || !comments) {
+        if(!userId || !foodScore || !cleanScore || !serviceScore || !finalScore || !date || !location || !cashier || !waitTime || !comments || !uniqueFileName || !downloadUrl) {
             return res.send({
                 message: 'Missing values in required fields'
             })
@@ -84,19 +86,19 @@ exports.newEvaluation = async (req, res) => {
                 greeting,
                 repeatOrder,
                 idManager,
-                waitTime,})
+                waitTime,
+                uniqueFileName,
+                downloadUrl,
+            })
             await evaluation.save()
-            return res.send({
+            return res.status(200).send({
                 evaluation,
             })
         }
-
-
-
     } catch (error) {
         console.log(error);
-        return res.send({
-            message: 'oops, something went wrong saving an evaluation',
+        return res.status(500).send({
+            message: 'oops, failed to submit evaluation',
             error,
         })
     }
@@ -119,7 +121,9 @@ exports.updateEvaluation = async (req, res) => {
             greeting,
             repeatOrder,
             idManager,
-            waitTime
+            waitTime,
+            uniqueFileName,
+            downloadUrl,
         } = req.body;
         const evaluation = await evaluationModel.findByIdAndUpdate(id, req.body, {new: true})
         if(!evaluation) {
@@ -140,8 +144,6 @@ exports.updateEvaluation = async (req, res) => {
         })
     }
 }
-
-
 
 exports.deleteEvaluation = async (req, res) => {
     try {

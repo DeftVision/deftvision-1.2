@@ -233,7 +233,6 @@ export default function EvaluationForm() {
                     name='date'
                     value={evaluationData.date}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     inputlabelprops={{shrink: true}}
                     required
@@ -244,7 +243,6 @@ export default function EvaluationForm() {
                         name="location"
                         label="location"
                         variant="outlined"
-                        fullWidth={true}
                         margin="none"
                         value={evaluationData.location}
                         onChange={handleFieldChange}
@@ -284,7 +282,6 @@ export default function EvaluationForm() {
                     onChange={handleFieldChange}
                     multiline
                     maxRows={5}
-                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -294,7 +291,6 @@ export default function EvaluationForm() {
                     label='wait time'
                     value={evaluationData.waitTime}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -332,7 +328,6 @@ export default function EvaluationForm() {
                     label='food score'
                     value={evaluationData.foodScore}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -342,7 +337,6 @@ export default function EvaluationForm() {
                     label='service score'
                     value={evaluationData.serviceScore}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -352,7 +346,6 @@ export default function EvaluationForm() {
                     label='clean score'
                     value={evaluationData.cleanScore}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />
@@ -362,7 +355,6 @@ export default function EvaluationForm() {
                     label='final Score'
                     value={evaluationData.finalScore}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />

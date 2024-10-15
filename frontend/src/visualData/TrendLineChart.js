@@ -61,7 +61,7 @@ export default function TrendLineChart() {
     return (
         <Box sx={{padding: 10}}>
             <Paper elevation={8} sx={{padding: 5}}>
-                <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterTop>trends</Typography>
+                <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>trends</Typography>
                 <ResponsiveContainer width='100%' height={400}>
                     <LineChart data={evaluationsByLocation}>
                         <CartesianGrid strokeDasharray="3 3" />

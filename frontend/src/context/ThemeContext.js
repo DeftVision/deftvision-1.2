@@ -29,8 +29,7 @@ export const ThemeContextProvider = ({ children }) => {
         components: {
             MuiTextField: {
                 defaultProps: {
-                    fullWidth: true,
-                    margin: 'normal'
+                    margin: 'none'
                 },
             },
         },

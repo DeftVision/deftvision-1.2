@@ -40,7 +40,8 @@ export default function EvaluationForm() {
         idManager: false,
         date: '',
         waitTime: '',
-        imageUrl: null
+        downloadUrl: '',
+        uniqueFileName: ''
     })
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploading, setUploading] = useState('default');
@@ -155,10 +156,10 @@ export default function EvaluationForm() {
         setError('')
         setSuccess('')
 
-
+        console.log('Evaluation Data: ', evaluationData);
         const { foodScore, cleanScore, serviceScore, finalScore, location, comments, cashier, waitTime, date, downloadUrl, uniqueFileName  } = evaluationData;
         // validation to ensure fields aren't empty
-        if (!foodScore || !cleanScore || !serviceScore || !finalScore || !location || !comments || !cashier || !waitTime || !date || !downloadUrl || !uniqueFileName) {
+        if (!foodScore || !cleanScore || !serviceScore || !finalScore || !location || !comments || !cashier || !waitTime || !date) {
             setError('Please fill out all required fields.');
             return;
         }

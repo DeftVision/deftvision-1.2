@@ -59,11 +59,11 @@ const evaluationSchema = new mongoose.Schema({
     },
     downloadUrl: {
         type: String,
-        required: true,
+        required: false,
     },
     uniqueFileName: {
         type: String,
-        required: true,
+        required: false,
     },
 }, {timestamps: true});
 

@@ -67,7 +67,7 @@ exports.newEvaluation = async (req, res) => {
             downloadUrl,
         } = req.body;
 
-        if(!userId || !foodScore || !cleanScore || !serviceScore || !finalScore || !date || !location || !cashier || !waitTime || !comments || !uniqueFileName || !downloadUrl) {
+        if(!userId || !foodScore || !cleanScore || !serviceScore || !finalScore || !date || !location || !cashier || !waitTime || !comments) {
             return res.send({
                 message: 'Missing values in required fields'
             })

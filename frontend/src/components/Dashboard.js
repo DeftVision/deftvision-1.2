@@ -2,6 +2,7 @@ import { Box, Modal, Stack, Typography } from '@mui/material'
 import { useState, useEffect } from 'react'
 
 import ScoreBarChart from '../visualData/ScoreBarChart'
+import ScoreDataTable from '../visualData/ScoreDataTable'
 import PerformancePieChart from '../visualData/PerformancePieChart'
 import TrendLineChart from '../visualData/TrendLineChart'
 
@@ -23,10 +24,10 @@ export default function Dashboard() {
     }, []);
 
 
-    //      calculate the average score
-    // const averageFinalScore = evaluations.length > 0
-    // ? evaluations.reduce((acc, curr) => acc + curr.finalScore, 0) / evaluations.length : 0;
-    //
+         //calculate the average score
+    const averageFinalScore = evaluations.length > 0
+    ? evaluations.reduce((acc, curr) => acc + curr.finalScore, 0) / evaluations.length : 0;
+
 
     return (
         <Box sx={{display: 'flex', flexDirection: 'column', marginTop: 5, justifyContent: 'center'}}>
@@ -35,11 +36,14 @@ export default function Dashboard() {
             {/* bar chart */}
             <ScoreBarChart evaluations={evaluations} setSelectedEvaluation={setSelectedEvaluation} />
 
+            {/* data grid */}
+            <ScoreDataTable evaluations={evaluations} setSelectedEvaluation={setSelectedEvaluation} />
+
             {/* trend line chart */}
             <TrendLineChart />
 
             {/* performance pie chart*/}
-            <PerformancePieChart evaluations={evaluations}/>
+            {/*<PerformancePieChart evaluations={evaluations}/>*/}
 
             {/* evaluation details modal */}
             {selectedEvaluation && (
@@ -47,22 +51,22 @@ export default function Dashboard() {
                     <Box sx={{
                         padding: 4,
                         backgroundColor: 'white',
+                        color: '#000',
                         margin: 'auto',
                         borderRadius: 2,
                         width: 400 }}
                     >
-                        <Stack direction='column' spacing={.25}>
-                            <Typography variant='overline' gutterBottom>{`evaluation details for ${selectedEvaluation.location}`}</Typography>
+                        <Stack direction='column'>
+                            <Typography variant='overline' gutterBottom>{`evaluation for ${selectedEvaluation.location}`}</Typography>
                             <Typography variant='overline'>{`Date: ${new Date(selectedEvaluation.date).toLocaleDateString()}`}</Typography>
                             <Typography variant='overline'>{`Food: ${selectedEvaluation.foodScore}`}</Typography>
                             <Typography variant='overline'>{`Clean: ${selectedEvaluation.cleanScore}`}</Typography>
                             <Typography variant='overline'>{`Service: ${selectedEvaluation.serviceScore}`}</Typography>
                             <Typography variant='overline'>{`Final: ${selectedEvaluation.finalScore}`}</Typography>
-                            <Typography variant='overline'>{`Comments: ${selectedEvaluation.comments}`}</Typography>
                             <Typography variant='overline'>{`Upsold: ${selectedEvaluation.upsell ? "Yes" : "No"}`}</Typography>
                             <Typography variant='overline'>{`Greeting: ${selectedEvaluation.greeting ? "Yes" : "No"}`}</Typography>
                             <Typography variant='overline'>{`Order Repeated: ${selectedEvaluation.repeatOrder ? "Yes" : "No"}`}</Typography>
-                            <Typography variant='overline'>{`Identify Management: ${selectedEvaluation.idManager ? "Yes" : "NO"}`}</Typography>
+                            <Typography variant='overline'>{`Management Identified: ${selectedEvaluation.idManager ? "Yes" : "NO"}`}</Typography>
                             <Typography variant='overline'>{`Wait Time: ${selectedEvaluation.waitTime}`}</Typography>
                         </Stack>
                     </Box>

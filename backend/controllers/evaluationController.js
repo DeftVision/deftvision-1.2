@@ -23,6 +23,30 @@ exports.getEvaluations = async (req, res) => {
     }
 }
 
+exports.getDashboardEvaluationData = async (req, res) => {
+    try {
+        const evaluations = await evaluationModel
+            .find({})
+            .select('date location foodScore cleanScore serviceScore finalScore');
+        if(!evaluations) {
+            return res.send({
+                message: 'No evaluations found',
+            });
+        } else {
+            return res.send({
+                evaluationCount: evaluations.length,
+                evaluations
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
+    }
+}
+
 exports.getEvaluation = async (req, res) => {
     try {
         const { id } = req.params

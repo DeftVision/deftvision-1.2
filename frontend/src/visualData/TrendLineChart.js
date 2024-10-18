@@ -5,16 +5,18 @@
 
 import { useEffect, useState } from 'react'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Stack, Select, Tooltip as MuiTooltip, Typography } from '@mui/material';
+import { Box, FormControl, IconButton, InputLabel, MenuItem, Paper, Stack, Select, Skeleton, Tooltip as MuiTooltip, Typography } from '@mui/material';
 import { Info } from '@mui/icons-material';
 
 export default function TrendLineChart() {
     const [evaluations, setEvaluations] = useState([])
     const [filteredLocation, setFilteredLocation] = useState('All')
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
         const getEvaluations = async () => {
             try {
+                setLoading(true);
                 const response = await fetch('http://localhost:5000/api/evaluation/evaluations', {
                     method: 'GET',
                     headers: {
@@ -26,6 +28,8 @@ export default function TrendLineChart() {
 
             } catch (error) {
                 console.error('Error loading evaluations', error);
+            } finally {
+                setLoading(false);
             }
         }
         getEvaluations();
@@ -49,20 +53,39 @@ export default function TrendLineChart() {
     return (
         <Box sx={{padding: 10}}>
             <Paper elevation={8} sx={{padding: 5}}>
-                <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>trends</Typography>
-                <MuiTooltip title={
-                    <Box>
-                        {Object.keys(evaluationsByLocation).map((location) => (
-                            <Typography key={location} style={{color: getColorForLocation(location)}}>
-                                {location}
-                            </Typography>
-                        ))}
-                    </Box>
-                }>
-                    <IconButton aria-label='info' sx={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center'}}>
-                        <Info  sx={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center'}}/>
-                    </IconButton>
-                </MuiTooltip>
+                <Stack direction='row' alignItems='center' justifyContent='space-between'>
+                    <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>trends</Typography>
+                    <MuiTooltip title={
+                        <Box sx={{padding: 1}}>
+                            {Object.keys(evaluationsByLocation).map((location) => (
+                                <Typography key={location} style={{color: getColorForLocation(location), fontWeight: 'bold'}}>
+                                    {/* Color dot matching the line color */}
+                                    <span style={{
+                                        display: 'inline-block',
+                                        width: '10px',
+                                        height: '10px',
+                                        borderRadius: '50%',
+                                        backgroundColor: getColorForLocation(location),
+                                        marginRight: '8px',
+                                    }}></span>
+                                    {location}
+                                </Typography>
+                            ))}
+                        </Box>
+                    }>
+                        <IconButton aria-label='info' sx={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center'}}>
+                            <Info  sx={{ alignContent: 'center', alignItems: 'center', justifyContent: 'center'}}/>
+                        </IconButton>
+                    </MuiTooltip>
+                </Stack>
+                {loading ? (
+                    <Skeleton
+                        animation='wave'
+                        variant='rounded'
+                        width={210}
+                        height={60}
+                    />
+                ) : (
                 <ResponsiveContainer width='100%' height={400}>
                     <LineChart data={flattenEvaluationByLocation(evaluationsByLocation)}>
                         <CartesianGrid strokeDasharray="3 3" />
@@ -72,7 +95,13 @@ export default function TrendLineChart() {
                             tickFormatter={(date) => new Date(date).toLocaleDateString()}  // Format the date
                         />
                         <YAxis />
-                        <Tooltip />
+                        <Tooltip  contentStyle={{
+                            backgroundColor: '#f5f5f5',
+                            border: '1px solid #ccc',
+                            borderRadius: '10px',
+                            padding: '10px',
+                            boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)'
+                        }}/>
                         {/* Render lines for each location */}
                         {Object.keys(evaluationsByLocation).map((location, index) => (
                             <Line
@@ -87,7 +116,10 @@ export default function TrendLineChart() {
                         ))}
 
                     </LineChart>
+
+
                 </ResponsiveContainer>
+                    )}
                 <FormControl sx={{minWidth: 250, marginBottom: 4, marginLeft: 7, marginTop: 2}}>
                     <InputLabel>Filter</InputLabel>
                     <Select variant="outlined" value={filteredLocation} onChange={handleLocationChange} label='Filter'>
@@ -121,7 +153,7 @@ const flattenEvaluationByLocation = (groupedEvaluations) => {
 };
 
 // Helper function to generate x-axis ticks for the last 30 days
-const getXTicksForLast30Days = () => {
+const getXTicksForLast30Days = (groupedEvaluations) => {
     const today = new Date();
     const thirtyDaysAgo = new Date();
     thirtyDaysAgo.setDate(today.getDate() - 30);

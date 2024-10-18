@@ -1,5 +1,5 @@
 import { useState} from 'react'
-import { Alert, Box, Button, TextField, Typography } from '@mui/material'
+import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode }  from 'jwt-decode';
 
@@ -52,42 +52,41 @@ export default function Login() {
     return (
         <div>
             <Box component='form' onSubmit={handleLogin} sx={{maxWidth: 400, margin: 'auto', padding: 2}}>
-                <Typography variant='overline' sx={{fontSize: '1rem', justifyContent: 'center'}} gutterBottom>
-                    Login
-                </Typography>
+                <Stack direction='column' spacing={3}>
+                    <Typography variant='overline' sx={{fontSize: '1rem', justifyContent: 'center'}} gutterBottom>
+                        Login
+                    </Typography>
 
-                {error && (
-                    <Alert severity='error' sx={{marginBottom: 2}}>
-                        {error}
-                    </Alert>
-                )}
+                    {error && (
+                        <Alert severity='error' sx={{marginBottom: 2}}>
+                            {error}
+                        </Alert>
+                    )}
 
-                {success && (
-                    <Alert severity='success' sx={{marginBottom: 2}}>
-                        Login successful
-                    </Alert>
-                )}
+                    {success && (
+                        <Alert severity='success' sx={{marginBottom: 2}}>
+                            Login successful
+                        </Alert>
+                    )}
 
-                <TextField
-                    label='username'
-                    value={username}
-                    onChange={(e) => setUsername(e.target.value)}
-                    fullWidth
-                    margin='normal'
-                />
-                <TextField
-                    label='password'
-                    type='password'
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    fullWidth
-                    margin='normal'
+                    <TextField
+                        label='username'
+                        value={username}
+                        onChange={(e) => setUsername(e.target.value)}
+                        margin='normal'
+                    />
+                    <TextField
+                        label='password'
+                        type='password'
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
+                        margin='normal'
+                    />
 
-                />
-
-                <Button type='submit' variant='contained' sx={{marginTop: 3, alignContent: 'center'}} fullwidth>
-                    Login
-                </Button>
+                    <Button type='submit' variant='contained' sx={{marginTop: 3, alignContent: 'center'}}>
+                        Login
+                    </Button>
+                </Stack>
             </Box>
         </div>
     );

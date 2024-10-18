@@ -1,4 +1,15 @@
-import { Box, Table, TableCell, TableRow, TableBody, TableHead, TableContainer, TablePagination, Paper } from "@mui/material";
+import {
+    Box,
+    Table,
+    TableCell,
+    TableRow,
+    TableBody,
+    TableHead,
+    TableContainer,
+    TablePagination,
+    Paper,
+    Typography
+} from "@mui/material";
 import { useState, useEffect } from "react";
 import * as React from 'react';
 
@@ -49,6 +60,8 @@ export default function ScoreDataTable() {
     return (
         <Box sx={{padding: 10}}>
             <Paper elevation={8} sx={{padding: 5}}>
+                <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>All Scores</Typography>
+
                 <TableContainer>
                     <Table sx={{minWidth: 700}} stickyHeader aria-label='location scores table grid'>
                         {/*<caption>scores for all locations</caption>*/}
@@ -64,7 +77,15 @@ export default function ScoreDataTable() {
                         </TableHead>
                         <TableBody>
                                 {displayedEvaluations.map((evaluation) => (
-                                        <TableRow key={evaluation._id}>
+                                        <TableRow
+                                            key={evaluation._id}
+                                            sx={{
+                                                '&:hover': {
+                                                    backgroundColor: '#f5f5f5',
+                                                    cursor: 'pointer'
+                                                }
+                                            }}
+                                        >
                                             <TableCell>{new Date(evaluation.date).toLocaleDateString()}</TableCell>
                                             <TableCell>{evaluation.location}</TableCell>
                                             <TableCell>{evaluation.foodScore}</TableCell>

@@ -271,7 +271,6 @@ export default function EvaluationForm() {
                     label='cashier'
                     value={evaluationData.cashier}
                     onChange={handleFieldChange}
-                    fullWidth={true}
                     margin='none'
                     required
                 />

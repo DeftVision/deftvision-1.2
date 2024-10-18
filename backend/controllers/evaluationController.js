@@ -47,6 +47,78 @@ exports.getDashboardEvaluationData = async (req, res) => {
     }
 }
 
+exports.getFoodScoresTrendData = async (req, res) => {
+    try {
+        const evaluations = await evaluationModel
+            .find({})
+            .select('date location foodScore');
+        if(!evaluations) {
+            return res.send({
+                message: 'No evaluations found',
+            });
+        } else {
+            return res.send({
+                evaluationCount: evaluations.length,
+                evaluations
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
+    }
+}
+
+exports.getCleanScoresTrendData = async (req, res) => {
+    try {
+        const evaluations = await evaluationModel
+            .find({})
+            .select('date location cleanScore');
+        if(!evaluations) {
+            return res.send({
+                message: 'No evaluations found',
+            });
+        } else {
+            return res.send({
+                evaluationCount: evaluations.length,
+                evaluations
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
+    }
+}
+
+exports.getServiceScoresTrendData = async (req, res) => {
+    try {
+        const evaluations = await evaluationModel
+            .find({})
+            .select('date location serviceScore');
+        if(!evaluations) {
+            return res.send({
+                message: 'No evaluations found',
+            });
+        } else {
+            return res.send({
+                evaluationCount: evaluations.length,
+                evaluations
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
+    }
+}
+
 exports.getEvaluation = async (req, res) => {
     try {
         const { id } = req.params

@@ -5,6 +5,7 @@ import ScoreBarChart from '../visualData/ScoreBarChart'
 import ScoreDataTable from '../visualData/ScoreDataTable'
 import PerformancePieChart from '../visualData/PerformancePieChart'
 import TrendLineChart from '../visualData/TrendLineChart'
+import ScoresTrend from '../visualData/ScoresTrend'
 
 export default function Dashboard() {
     const [selectedEvaluation, setSelectedEvaluation] = useState(null);
@@ -33,8 +34,15 @@ export default function Dashboard() {
         <Box sx={{display: 'flex', flexDirection: 'column', marginTop: 5, justifyContent: 'center'}}>
             <Typography variant='overline' sx={{fontSize: '1.5rem', textAlign: 'center', marginBottom: 5}}>Dashboard</Typography>
 
+            {/* trend cards */}
+            <ScoresTrend />
+
             {/* bar chart */}
             <ScoreBarChart evaluations={evaluations} setSelectedEvaluation={setSelectedEvaluation} />
+
+            <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'center'}}>
+                Average Score [all locations]:{<br/>} {<strong>{averageFinalScore}</strong>}
+            </Typography>
 
             {/* data grid */}
             <ScoreDataTable evaluations={evaluations} setSelectedEvaluation={setSelectedEvaluation} />

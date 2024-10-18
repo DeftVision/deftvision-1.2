@@ -6,7 +6,7 @@ import {Box, Paper, Typography} from "@mui/material";
 export default function ScoreBarChart({ evaluations, setSelectedEvaluation }) {
     const mostRecentEvaluations = getMostRecentEvaluations(evaluations);
 
-const truncateLocation = (location) => location.substring(0, 3);
+const truncateLocation = (location) => location.substring(0, 2);
     return (
         <Box sx={{padding: 10}}>
             <Paper elevation={8} sx={{padding: 5}}>

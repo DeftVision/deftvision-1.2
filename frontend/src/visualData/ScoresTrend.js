@@ -98,7 +98,7 @@ export default function ScoresTrend() {
 
     }
 
-/*    const formatDate = (date) => {
+    /* const formatDate = (date) => {
         const options = { year: 'numeric', month: 'short', day: 'numeric' };
         return new Date(date).toLocaleDateString(undefined, options);
     };*/
@@ -109,7 +109,9 @@ export default function ScoresTrend() {
                     <XAxis dataKey="date" tick={false} axisLine={false} />
                     <YAxis tick={false} axisLine={false} />
                     <Line dataKey={dataKey} strokeWidth={2} dot={false} />
-                    <Tooltip />
+                    <Tooltip
+                        sx={{backgroundColor: 'none'}}
+                    />
                 </LineChart>
             </ResponsiveContainer>
 
@@ -118,7 +120,7 @@ export default function ScoresTrend() {
 
     return (
         <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center'}}>
-            <Card sx={{ textAlign: 'center'}}>
+            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center'}}>
                 <CardHeader>
                     <Typography variant='overline' sx={{textAlign: 'center'}}>
                         food
@@ -160,7 +162,7 @@ export default function ScoresTrend() {
                     )}
                 </CardContent>
                 <Divider />
-                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
+                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center' }}>
                     <FormControl>
                         <Select
                             variant='standard'
@@ -186,8 +188,8 @@ export default function ScoresTrend() {
                             renderLineChart(serviceEvaluations, 'serviceScore', 'Service Score')
                         )}
                     </CardContent>
-                    <Divider />
-                    <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
+                    {/*<Divider />*/}
+                    <CardActions sx={{justifyContent: 'center', verticalAlign: 'center'}}>
                         <FormControl>
                             <Select
                                 variant='standard'

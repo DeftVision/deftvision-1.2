@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Box, Card, CardActionArea, CardHeader, CardContent, CardMedia, FormControl, InputLabel, MenuItem, Paper, Skeleton, Stack, styled, Select, Typography} from '@mui/material'
+import { Box, Card, CardActions, CardHeader, CardContent, Divider, FormControl, InputLabel, MenuItem, Paper, Skeleton, Select, Typography} from '@mui/material'
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 
 
@@ -7,7 +7,7 @@ export default function ScoresTrend() {
     const [foodEvaluations, setFoodEvaluations] = useState([])
     const [cleanEvaluations, setCleanEvaluations] = useState([])
     const [serviceEvaluations, setServiceEvaluations] = useState([])
-    const [selectedLocations, setSelectedLocations] = useState('All')
+    const [selectedLocation, setSelectedLocation] = useState('All')
     const [locations, setLocations] = useState([])
     const [loading, setLoading] = useState(true)
 
@@ -104,42 +104,53 @@ export default function ScoresTrend() {
     };*/
 
     const renderLineChart = (data, dataKey, title) => (
-        <Paper elevation={12} sx={{backgroundColor: 'red', padding: 2, borderRadius: 2}}>
-            <ResponsiveContainer width="100%" height={200}>
-                <LineChart data={data}>
-                    {/*<CartesianGrid strokeDasharray="3 3" />*/}
+            <ResponsiveContainer width="100%" height={150}>
+                <LineChart data={data} type='monotone' sx={{justifyContent: 'start'}}>
                     <XAxis dataKey="date" tick={false} axisLine={false} />
                     <YAxis tick={false} axisLine={false} />
+                    <Line dataKey={dataKey} strokeWidth={2} dot={false} />
                     <Tooltip />
-                    <Legend />
-                    <Line type="monotone" dataKey={dataKey} stroke="#ffffff" strokeWidth={2} dot={false} />
                 </LineChart>
             </ResponsiveContainer>
-        </Paper>
+
     )
 
 
     return (
         <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center'}}>
-            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center' }}>
+            <Card sx={{ textAlign: 'center'}}>
+                <CardHeader>
+                    <Typography variant='overline' sx={{textAlign: 'center'}}>
+                        food
+                    </Typography>
+                </CardHeader>
                 <CardContent>
-                    <FormControl>
-                        <InputLabel>Location</InputLabel>
-                        <Select variant='outlined'>
-                            {locations.map((location) => (
-                                <MenuItem key={location} value={location}>{location}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
                     {loading ? (
                         <Skeleton variant="rectangular" height={200} />
                     ) : (
                         renderLineChart(foodEvaluations, 'foodScore', 'Food Score')
                     )}
                 </CardContent>
+                    <Divider />
+                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
+                    <FormControl>
+                        <Select
+                            variant='standard'
+                            sx={{
+                                minWidth: '175px',
+                                textAlign: 'start',
+                                marginBottom: 3
+                            }}
+                        >
+                            {locations.map((location) => (
+                                <MenuItem key={location} value={location}>{location}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </CardActions>
             </Card>
 
-            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center' }}>
+            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center', marginLeft: 3, marginRight: 3 }}>
                 <CardContent>
 
                     {loading ? (
@@ -148,20 +159,51 @@ export default function ScoresTrend() {
                         renderLineChart(cleanEvaluations, 'cleanScore', 'Clean Score')
                     )}
                 </CardContent>
+                <Divider />
+                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
+                    <FormControl>
+                        <Select
+                            variant='standard'
+                            margin='normal'
+                            sx={{
+                                justifyContent: 'center',
+                                minWidth: '175px',
+                                textAlign: 'start',
+                            }}
+                        >
+                            {locations.map((location) => (
+                                <MenuItem key={location} value={location}>{location}</MenuItem>
+                            ))}
+                        </Select>
+                    </FormControl>
+                </CardActions>
             </Card>
-
-            <Card sx={{maxWidth: '350px', minWidth: '200px', textAlign: 'center', justifyContent: 'space-between', alignContent: 'space-between'}}>
                 <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center' }}>
-                    <CardContent>
-
+                    <CardContent sx={{justifyContent: 'center'}}>
                         {loading ? (
                             <Skeleton variant="rectangular" height={200} />
                         ) : (
                             renderLineChart(serviceEvaluations, 'serviceScore', 'Service Score')
                         )}
                     </CardContent>
+                    <Divider />
+                    <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
+                        <FormControl>
+                            <Select
+                                variant='standard'
+                                margin='normal'
+                                sx={{
+                                    minWidth: '175px',
+                                    textAlign: 'start',
+                                }}
+                            >
+                                {locations.map((location) => (
+                                    <MenuItem key={location} value={location}>{location}</MenuItem>
+                                ))}
+                            </Select>
+                        </FormControl>
+                    </CardActions>
                 </Card>
-            </Card>
         </Box>
     );
 }

@@ -12,17 +12,17 @@ const truncateLocation = (location) => location.substring(0, 2);
             <Paper elevation={8} sx={{padding: 5}}>
                 <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10}}>final scores</Typography>
                 <ResponsiveContainer width='100%' height={300}>
-                    <RechartsBarChart data={mostRecentEvaluations}>
-                        <defs>
-                            {/* Define the gradient from dark red to green */}
+                    <RechartsBarChart data={mostRecentEvaluations} sx={{color: '#014012'}}>
+                       {/* <defs>
+                             Define the gradient from dark red to green
                             <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
                                 <stop offset="0%" stopColor="#32CD32" stopOpacity={1}/>
-                                {/* Green */}
+                                 Green
                                 <stop offset="100%" stopColor="#8B0000" stopOpacity={1}/>
-                                {/* Dark Red */}
+                                 Dark Red
                             </linearGradient>
-                        </defs>
-                        <CartesianGrid strokeDasharray={'3 3'}/>
+                        </defs>*/}
+                        {/*<CartesianGrid strokeDasharray={'3 3'}/>*/}
                         <XAxis
                             dataKey='location'
                             tickFormatter={truncateLocation}
@@ -35,9 +35,9 @@ const truncateLocation = (location) => location.substring(0, 2);
                                     <Box sx={{
                                         backgroundColor: '#fff',
                                         color: '#000',
-                                        padding: '10px',
+                                        padding: '4px',
                                         borderRadius: '5px',
-                                        border: '1px solid #ccc'
+                                        // border: '1px solid #ccc'
                                     }}>
                                         <Typography>{`Location : ${evaluation.location}`}</Typography>
                                         <Typography>{`Date : ${new Date(evaluation.date).toLocaleDateString()}`}</Typography>
@@ -51,7 +51,8 @@ const truncateLocation = (location) => location.substring(0, 2);
                             return null;
                         }}/>
                         <Bar dataKey="finalScore"
-                             fill="url(#barGradient)"/> onClick={(data) => setSelectedEvaluation(data)}/>
+                             fill="#f09d46" onClick={(data) => setSelectedEvaluation(data)}
+                        />
                     </RechartsBarChart>
                 </ResponsiveContainer>
             </Paper>

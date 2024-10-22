@@ -47,6 +47,8 @@ exports.getDashboardEvaluationData = async (req, res) => {
     }
 }
 
+
+
 exports.getFoodScoresTrendData = async (req, res) => {
     try {
         const evaluations = await evaluationModel

@@ -1,5 +1,5 @@
+// DONE: find which field isn't being populated preventing form submission
 // TODO: update the URL when the data table is built
-// TODO: find which field isn't being populated preventing form submission
 // TODO: align image name with upload button
 // TODO: fix form submission / upload to firebase
 
@@ -8,8 +8,8 @@ import { Alert, Box, Button, FormControl, FormControlLabel, LinearProgress, Inpu
 import { useEffect, useState } from 'react'
 import { useParams, useNavigate, Link } from 'react-router-dom'
 import { deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable } from 'firebase/storage';
+import locations from '../utilities/locationSelect'
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
-
 import {v4 as uuidv4} from 'uuid';
 
 const VisuallyHiddenInput = styled('input')({
@@ -31,24 +31,24 @@ export default function EvaluationForm() {
         cleanScore: '',
         serviceScore: '',
         finalScore: '',
-        location: '',
+        location: 'Corporate Office',
         comments: '',
         cashier: '',
         upsell: false,
         greeting: false,
         repeatOrder: false,
         idManager: false,
-        date: '',
+        date: new Date().toISOString().split('T')[0],
         waitTime: '',
         downloadUrl: '',
         uniqueFileName: ''
     })
+    const [error, setError] = useState('');
+    const [success, setSuccess] = useState('');
     const [uploadProgress, setUploadProgress] = useState(0);
     const [uploading, setUploading] = useState('default');
     const [fileName, setFileName] = useState('');
     const [file, setFile] = useState(null);
-    const [error, setError] = useState('');
-    const [success, setSuccess] = useState('');
     const {id} = useParams()
     const navigate = useNavigate();
 
@@ -83,7 +83,7 @@ export default function EvaluationForm() {
         if (file) {
             const uniqueFileName = `${uuidv4()}-${file.name}`
             const storage = getStorage();
-            const storageRef = ref(storage, `evaluation/${uniqueFileName}`);
+            const storageRef = ref(storage, `uploads/${uniqueFileName}`);
             const uploadTask = uploadBytesResumable(storageRef, file);
 
             setUploading('uploading');
@@ -98,26 +98,28 @@ export default function EvaluationForm() {
                     console.error('upload failed', error);
                     setUploading('error');
 
-                },
-                async () => {
-                    try {
-                        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
-                        evaluationData((prevForm) => ({
-                            ...prevForm,
-                            downloadUrl,
-                            uniqueFileName,
-                        }));
-                        setUploading('success');
-                        console.log('Upload successfully', 'success');
-                    } catch (error) {
-                        setUploading('error');
-                        console.log('Failed to get download URL', 'error');
-                    }
                 }
             );
+
+            try {
+                await uploadTask;
+                const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                setEvaluationData((prevForm) => ({
+                    ...prevForm,
+                    downloadUrl,
+                    uniqueFileName,
+                }));
+                setUploading('success');
+
+            } catch (error) {
+                console.error('Failed to get download URL: ', error);
+                setUploading('error');
+
+            }
         } else {
             throw new Error('No file selected');
         }
+
     };
 
     const saveToDb = async () => {
@@ -128,8 +130,7 @@ export default function EvaluationForm() {
         /*if (!newEvaluation) {
             url = `http://localhost:9000/api/evaluation/update/${id}`;
             method = 'PATCH';
-        }
-*/
+        }*/
         try {
             const response = await fetch(url, {
                 method: method,
@@ -157,7 +158,7 @@ export default function EvaluationForm() {
         setSuccess('')
 
         console.log('Evaluation Data: ', evaluationData);
-        const { foodScore, cleanScore, serviceScore, finalScore, location, comments, cashier, waitTime, date, downloadUrl, uniqueFileName  } = evaluationData;
+        const { foodScore, cleanScore, serviceScore, finalScore, location, comments, cashier, waitTime, date } = evaluationData;
         // validation to ensure fields aren't empty
         if (!foodScore || !cleanScore || !serviceScore || !finalScore || !location || !comments || !cashier || !waitTime || !date) {
             setError('Please fill out all required fields.');
@@ -170,6 +171,8 @@ export default function EvaluationForm() {
             Object.keys(evaluationData).forEach(key => {
                 formData.append(key, evaluationData[key])
             })
+
+            await uploadFileToFirebase();
 
             const token = localStorage.getItem('token');
             if(!token) {
@@ -210,6 +213,10 @@ export default function EvaluationForm() {
         }
     }, [uploading])
 
+    useEffect(() => {
+        console.log(evaluationData)
+    },[])
+
 
     return (
         <Box component='form' onSubmit={handleSubmit} sx={{padding: 3, marginTop: 5}}>
@@ -234,7 +241,7 @@ export default function EvaluationForm() {
                     name='date'
                     value={evaluationData.date}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     inputlabelprops={{shrink: true}}
                     required
                 />
@@ -245,23 +252,14 @@ export default function EvaluationForm() {
                         label="location"
                         variant="outlined"
                         margin="none"
-                        value={evaluationData.location}
+                        value={evaluationData.location || ''}
                         onChange={handleFieldChange}
                     >
-                        <MenuItem value="Sandy">Sandy</MenuItem>
-                        <MenuItem value="Draper">Draper</MenuItem>
-                        <MenuItem value="Bountiful">Bountiful</MenuItem>
-                        <MenuItem value="Logan">Logan</MenuItem>
-                        <MenuItem value="Riverdale">Riverdale</MenuItem>
-                        <MenuItem value="Jordan Landing">Jordan Landing</MenuItem>
-                        <MenuItem value="Murray">Murray</MenuItem>
-                        <MenuItem value="Layton">Layton</MenuItem>
-                        <MenuItem value="Orem">Orem</MenuItem>
-                        <MenuItem value="Lehi">Lehi</MenuItem>
-                        <MenuItem value="Provo">Provo</MenuItem>
-                        <MenuItem value="Spanish Fork">Spanish Fork</MenuItem>
-                        <MenuItem value="East Mesa">East Mesa</MenuItem>
-                        <MenuItem value="Mesa">Mesa</MenuItem>
+                        {locations.map((location) => (
+                            <MenuItem key={location} value={location}>
+                                {location}
+                            </MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
 
@@ -271,7 +269,7 @@ export default function EvaluationForm() {
                     label='cashier'
                     value={evaluationData.cashier}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <TextField
@@ -282,7 +280,7 @@ export default function EvaluationForm() {
                     onChange={handleFieldChange}
                     multiline
                     maxRows={5}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <TextField
@@ -291,7 +289,7 @@ export default function EvaluationForm() {
                     label='wait time'
                     value={evaluationData.waitTime}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <FormControlLabel
@@ -328,7 +326,7 @@ export default function EvaluationForm() {
                     label='food score'
                     value={evaluationData.foodScore}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <TextField
@@ -337,7 +335,7 @@ export default function EvaluationForm() {
                     label='service score'
                     value={evaluationData.serviceScore}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <TextField
@@ -346,7 +344,7 @@ export default function EvaluationForm() {
                     label='clean score'
                     value={evaluationData.cleanScore}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
                 <TextField
@@ -355,7 +353,7 @@ export default function EvaluationForm() {
                     label='final Score'
                     value={evaluationData.finalScore}
                     onChange={handleFieldChange}
-                    margin='none'
+                    margin="none"
                     required
                 />
 

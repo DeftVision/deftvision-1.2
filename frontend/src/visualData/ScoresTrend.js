@@ -1,25 +1,18 @@
-import { useState, useEffect } from 'react'
-import { Box, Card, CardActions, CardHeader, CardContent, Divider, FormControl, InputLabel, MenuItem, Paper, Skeleton, Select, Typography} from '@mui/material'
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts'
-
+import {useEffect, useState} from 'react'
+import {Box, Card, CardActions, CardContent, CardHeader, Typography} from '@mui/material';
+import {Line, LineChart, ResponsiveContainer, XAxis} from 'recharts';
+import {ArrowDownward, ArrowUpward} from '@mui/icons-material';
 
 export default function ScoresTrend() {
-    const [foodEvaluations, setFoodEvaluations] = useState([])
-    const [cleanEvaluations, setCleanEvaluations] = useState([])
-    const [serviceEvaluations, setServiceEvaluations] = useState([])
-    const [selectedLocation, setSelectedLocation] = useState('All')
-    const [locations, setLocations] = useState([])
-    const [loading, setLoading] = useState(true)
-
+    const [evaluations, setEvaluations] = useState([])
+    const [averageScores, setAverageScores] = useState([])
+    const [totalEvaluations, setTotalEvaluations] = useState(0);
+    const [percentageChange, setPercentageChange] = useState(null);
 
     useEffect(() => {
-
-        // load food scores
-        const getFoodScores = async () => {
+        const getEvaluations = async () => {
             try {
-                setLoading(true);
-
-                const response = await fetch ('http://localhost:5000/api/evaluation/evaluation-food', {
+                const response = await fetch('http://localhost:5000/api/evaluation/evaluation-data', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
@@ -27,186 +20,97 @@ export default function ScoresTrend() {
                 })
 
                 const data = await response.json();
-                setFoodEvaluations(data.evaluations);
+                setEvaluations(data.evaluations);
 
-                const uniqueLocations = [...new Set(data.evaluations.map((evaluation) => evaluation.location))]
-                setLocations(uniqueLocations)
+                // TODO: calculate the average final score
+                const scoresByDate = groupByDate(data.evaluations);
+                setAverageScores(scoresByDate);
 
-            } catch (error) {
-                console.error('Error Loading Food Scores', error);
-            } finally {
-                setLoading(false)
-            }
-        }
-        getFoodScores();
-    }, []);
+                // TODO: set total evaluation count
+                setTotalEvaluations(data.evaluations.length);
 
-    // load clean scores
-    useEffect(() => {
-        const getCleanScores = async () => {
-            try {
-                setLoading(true);
-
-                const response = await fetch ('http://localhost:5000/api/evaluation/evaluation-clean', {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-
-                const data = await response.json();
-                setCleanEvaluations(data.evaluations);
-            } catch (error) {
-                console.error('Error Loading Clean Scores', error);
-            } finally {
-                setLoading(false)
-            }
-        }
-        getCleanScores();
-    }, []);
-
-
-    // load service scores
-    useEffect(() => {
-        const getServiceScores = async () => {
-            try {
-                setLoading(true);
-
-                const response = await fetch (`http://localhost:5000/api/evaluation/evaluation-service`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    }
-                })
-
-                const data = await response.json();
-                setServiceEvaluations(data.evaluations);
-                console.log(data.evaluations);
+                if (scoresByDate.length > 1) {
+                    const firstScore = parseFloat(scoresByDate[0].avgFinalScore);
+                    const lastScore = parseFloat(scoresByDate[scoresByDate.length - 1].avgFinalScore);
+                    const percentageChange = ((lastScore - firstScore) / firstScore) * 100;
+                    setPercentageChange(percentageChange.toFixed(2));
+                }
 
             } catch (error) {
-                console.error('Error Loading Service Scores', error);
-            } finally {
-                setLoading(false)
+                console.error('Error loading evaluations', error);
             }
         }
-        getServiceScores();
+        getEvaluations();
     }, []);
 
-    const filterEvaluationByLocation = (evaluations) => {
-        if(selectedLocation === 'All') return evaluations;
-        return evaluations.filter((evaluation) => evaluation.location === selectedLocation);
+    const groupByDate = (evaluations) => {
+        const grouped = {};
+        evaluations.forEach((evaluation) => {
+            const date = new Date(evaluation.date).toLocaleDateString();
+            if (!grouped[date]) {
+                grouped[date] = {total: 0, count: 0}
+            }
+            grouped[date].total += evaluation.finalScore;
+            grouped[date].count += 1;
+        });
 
-    }
-
-    /* const formatDate = (date) => {
-        const options = { year: 'numeric', month: 'short', day: 'numeric' };
-        return new Date(date).toLocaleDateString(undefined, options);
-    };*/
-
-    const renderLineChart = (data, dataKey, title) => (
-            <ResponsiveContainer width="100%" height={150}>
-                <LineChart data={data} type='monotone' sx={{justifyContent: 'start'}}>
-                    <XAxis dataKey="date" tick={false} axisLine={false} />
-                    <YAxis tick={false} axisLine={false} />
-                    <Line dataKey={dataKey} strokeWidth={2} dot={false} />
-                    <Tooltip
-                        sx={{backgroundColor: 'none'}}
-                    />
-                </LineChart>
-            </ResponsiveContainer>
-
-    )
-
+        return Object.keys(grouped).map((date) => ({
+            date,
+            avgFinalScore: (grouped[date].total / grouped[date].count).toFixed(2),
+        }));
+    };
 
     return (
-        <Box sx={{display: 'flex', flexWrap: 'wrap', flexDirection: 'row', justifyContent: 'center'}}>
-            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center'}}>
-                <CardHeader>
-                    <Typography variant='overline' sx={{textAlign: 'center'}}>
-                        food
+        <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
+            <Card sx={{minWidth: 300, color: '#fff', margin: 2, position: 'relative'}}>
+                <CardHeader sx={{backgroundColor: '#1976d2', color: '#fff'}}>
+                    {/* title section */}
+                    <Typography variant='overline' sx={{fontSize: '1rem', marginBottom: 1 }}>
+                        Final Score
                     </Typography>
+
                 </CardHeader>
-                <CardContent>
-                    {loading ? (
-                        <Skeleton variant="rectangular" height={200} />
-                    ) : (
-                        renderLineChart(foodEvaluations, 'foodScore', 'Food Score')
+                <CardContent sx={{backgroundColor: '#1976d2'}}>
+                    {percentageChange !== null && (
+                        <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
+                            {percentageChange > 0 ? (<ArrowUpward style={{color: 'green'}}/>
+                            ) : (
+                                <ArrowDownward style={{color: 'red'}}/>
+                            )}
+                            <Typography sx={{fontSize: '1rem', marginLeft: '4px'}}>
+                                {Math.abs(percentageChange)} %
+                            </Typography>
+                        </Box>
                     )}
+
+                    {/*  line chart  */}
+                    <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 150}}>
+                        <ResponsiveContainer width='100%' height={100}>
+                            <LineChart data={averageScores}>
+
+                                <XAxis dataKey='date' stroke='#fff'/>
+
+
+                                <Line type='monotone' dataKey='avgFinalScore' stroke='#fff' strokeWidth={2}
+                                      dot={false}/>
+                            </LineChart>
+                        </ResponsiveContainer>
+                    </Box>
                 </CardContent>
-                    <Divider />
-                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center', marginTop: 1}}>
-                    <FormControl>
-                        <Select
-                            variant='standard'
-                            sx={{
-                                minWidth: '175px',
-                                textAlign: 'start',
-                                marginBottom: 3
-                            }}
-                        >
-                            {locations.map((location) => (
-                                <MenuItem key={location} value={location}>{location}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
+
+                <CardActions sx={{padding: 2, color: '#000'}}>
+                    {/*  evaluation Count  */}
+                    <Typography variant='caption'>Evaluations Count: </Typography>
+                    <Typography variant='caption'>{totalEvaluations}</Typography>
+                    <br/>
+
+                    <Typography variant='caption'>Avg Score: </Typography>
+                    <Typography
+                        variant='caption'>{averageScores.length > 0 ? averageScores[averageScores.length - 1].avgFinalScore : 'N/A'}</Typography>
                 </CardActions>
             </Card>
-
-            <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center', marginLeft: 3, marginRight: 3 }}>
-                <CardContent>
-
-                    {loading ? (
-                        <Skeleton variant="rectangular" height={200} />
-                    ) : (
-                        renderLineChart(cleanEvaluations, 'cleanScore', 'Clean Score')
-                    )}
-                </CardContent>
-                <Divider />
-                <CardActions sx={{justifyContent: 'center', verticalAlign: 'center' }}>
-                    <FormControl>
-                        <Select
-                            variant='standard'
-                            margin='normal'
-                            sx={{
-                                justifyContent: 'center',
-                                minWidth: '175px',
-                                textAlign: 'start',
-                            }}
-                        >
-                            {locations.map((location) => (
-                                <MenuItem key={location} value={location}>{location}</MenuItem>
-                            ))}
-                        </Select>
-                    </FormControl>
-                </CardActions>
-            </Card>
-                <Card sx={{ maxWidth: '350px', minWidth: '300px', textAlign: 'center' }}>
-                    <CardContent sx={{justifyContent: 'center'}}>
-                        {loading ? (
-                            <Skeleton variant="rectangular" height={200} />
-                        ) : (
-                            renderLineChart(serviceEvaluations, 'serviceScore', 'Service Score')
-                        )}
-                    </CardContent>
-                    {/*<Divider />*/}
-                    <CardActions sx={{justifyContent: 'center', verticalAlign: 'center'}}>
-                        <FormControl>
-                            <Select
-                                variant='standard'
-                                margin='normal'
-                                sx={{
-                                    minWidth: '175px',
-                                    textAlign: 'start',
-                                }}
-                            >
-                                {locations.map((location) => (
-                                    <MenuItem key={location} value={location}>{location}</MenuItem>
-                                ))}
-                            </Select>
-                        </FormControl>
-                    </CardActions>
-                </Card>
         </Box>
     );
+
 }
 

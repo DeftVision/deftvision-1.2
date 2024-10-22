@@ -73,14 +73,14 @@ export default function Login() {
                         label='username'
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-                        margin='normal'
+
                     />
                     <TextField
                         label='password'
                         type='password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
-                        margin='normal'
+                        margin="normal"
                     />
 
                     <Button type='submit' variant='contained' sx={{marginTop: 3, alignContent: 'center'}}>

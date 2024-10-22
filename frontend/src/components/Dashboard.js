@@ -60,7 +60,6 @@ export default function Dashboard() {
                         padding: 4,
                         backgroundColor: 'white',
                         color: '#000',
-                        margin: 'auto',
                         borderRadius: 2,
                         width: 400 }}
                     >

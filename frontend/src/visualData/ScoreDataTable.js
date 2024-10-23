@@ -1,5 +1,6 @@
 import {
     Box,
+    Paper,
     Table,
     TableCell,
     TableRow,
@@ -7,7 +8,8 @@ import {
     TableHead,
     TableContainer,
     TablePagination,
-    Paper,
+    TableSortLabel,
+    TextField,
     Typography
 } from "@mui/material";
 import { useState, useEffect } from "react";
@@ -19,6 +21,8 @@ export default function ScoreDataTable() {
     const [evaluations, setEvaluations] = useState([])
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
+    const [searchQuery, setSearchQuery] = useState('')
+    const [sortConfig, setSortConfig] = useState({key: 'date', direction: 'asc'});
 
 
     async function getEvaluations () {
@@ -47,6 +51,37 @@ export default function ScoreDataTable() {
         getEvaluations();
     }, []);
 
+    // search input
+    const handleSearch = (e) => {
+        setSearchQuery(e.target.value);
+    }
+
+    // sort columns
+    const handleSort = (key) => {
+        let direction = 'asc';
+        if(sortConfig.key === key && sortConfig.direction === 'asc') {
+            direction = 'desc'
+        }
+        setSortConfig({key, direction})
+    }
+
+    // sort logic
+    const sortedEvaluations = [...evaluations].sort((a,b) => {
+        if(sortConfig.direction === 'asc') {
+            return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1;
+        }
+        return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1
+    })
+
+    const filteredEvaluations = sortedEvaluations.filter((evaluation) => {
+        /*const matchesSearch = evaluation.location.toLowerCase().includes(searchQuery.toLowerCase());
+        const matchesLocation = filterLocation === 'All' || evaluation.location === filterLocation;*/
+        // return matchesSearch && matchesLocation;
+        return evaluation.location.toLowerCase().includes(searchQuery.toLowerCase())
+    })
+
+    const displayedEvaluations = filteredEvaluations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+
     const handleChangePage = (e, newPage) => {
         setPage(newPage);
     }
@@ -55,24 +90,80 @@ export default function ScoreDataTable() {
         setRowsPerPage(+e.target.value)
         setPage(0);
     }
-    const displayedEvaluations = evaluations.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     return (
         <Box sx={{padding: 10}}>
             <Paper elevation={8} sx={{padding: 5}}>
                 <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>All Scores</Typography>
 
+                <Box sx={{display: 'flex', justifyContent: 'space-between', marginBottom: 2}}>
+                    <TextField
+                        variant='outlined'
+                        value={searchQuery}
+                        onChange={handleSearch}
+                        label='search'
+                        sx={{width: '30%'}}
+                    />
+                </Box>
+
                 <TableContainer>
                     <Table sx={{minWidth: 700}} stickyHeader aria-label='location scores table grid'>
-                        {/*<caption>scores for all locations</caption>*/}
                         <TableHead>
                             <TableRow>
-                                <TableCell>Date</TableCell>
-                                <TableCell>Location</TableCell>
-                                <TableCell>Food</TableCell>
-                                <TableCell>Clean</TableCell>
-                                <TableCell>Service</TableCell>
-                                <TableCell>Final</TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'date'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('date')}
+                                    >
+                                        Date
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'location'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('location')}
+                                    >
+                                        Location
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'foodScore'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('foodScore')}
+                                    >
+                                        Food
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'cleanScore'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('cleanScore')}
+                                    >
+                                        Clean
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'serviceScore'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('serviceScore')}
+                                    >
+                                        Service
+                                    </TableSortLabel>
+                                </TableCell>
+                                <TableCell>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'finalScore'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('finalScore')}
+                                    >
+                                        Final
+                                    </TableSortLabel>
+                                </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
@@ -82,7 +173,7 @@ export default function ScoreDataTable() {
                                             sx={{
                                                 '&:hover': {
                                                     backgroundColor: '#f5f5f5',
-                                                    cursor: 'pointer'
+                                                    cursor: 'none'
                                                 }
                                             }}
                                         >

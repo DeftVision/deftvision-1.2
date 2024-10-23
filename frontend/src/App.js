@@ -4,6 +4,7 @@ import { Route, Routes } from 'react-router-dom';
 import { Error, Home } from './pages/index';
 import { Dashboard, Login, Navbar } from './components/index';
 import { PrivateRoute } from './utilities/index';
+import DocumentForm from './documents/DocumentForm';
 import EvaluationForm from './evaluations/EvaluationForm'
 
 
@@ -21,6 +22,8 @@ function App() {
                         <Route path='*' element={<Error/>}/>
 
                         <Route path='/evaluations' element={<EvaluationForm/>} />
+
+                        <Route path='/documents' element={<DocumentForm/>} />
 
                         <Route path='/dashboard' element={
                             <PrivateRoute>

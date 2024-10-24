@@ -6,6 +6,7 @@ import { Dashboard, Login, Navbar } from './components/index';
 import { PrivateRoute } from './utilities/index';
 import Documents from './documents/Documents';
 import Evaluations from './evaluations/Evaluations'
+import Announcements from './announcements/Announcements'
 
 
 function App() {
@@ -21,7 +22,7 @@ function App() {
                         <Route path='/home' element={<Home/>}/>
                         <Route path='*' element={<Error/>}/>
 
-                        {/*<Route path='/evaluations' element={<EvaluationForm/>} />*/}
+                        <Route path='/announcements' element={<Announcements />}/>
                         <Route path='/evaluations' element={<Evaluations/>} />
 
                         <Route path='/documents' element={<Documents/>} />

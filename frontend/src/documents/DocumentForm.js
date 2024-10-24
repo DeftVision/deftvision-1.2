@@ -118,16 +118,13 @@ export default function DocumentForm() {
 
     const saveToDb = async () => {
 
-        let url = 'http://localhost:5000/api/document/new/';
-        let method = 'POST';
-
         /*if (!newDocument) {
             url = `http://localhost:5000/api/document/update/${id}`;
             method = 'PATCH';
         }*/
 
         try {
-            const response = await fetch(url, {
+            const response = await fetch('http://localhost:5000/api/document/new/', {
                 method: 'POST',
                 body: JSON.stringify(formData),
                 headers: {
@@ -170,9 +167,8 @@ export default function DocumentForm() {
         if (uploading === 'success') {
             saveToDb();
         }
-    }, [uploading]);
+    }, []);
 
-    console.log(formData);
     return (
         <Box sx={{p: 3, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 5}}>
             <form onSubmit={handleSubmit}>

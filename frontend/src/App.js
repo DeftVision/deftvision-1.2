@@ -4,8 +4,8 @@ import { Route, Routes } from 'react-router-dom';
 import { Error, Home } from './pages/index';
 import { Dashboard, Login, Navbar } from './components/index';
 import { PrivateRoute } from './utilities/index';
-import DocumentForm from './documents/DocumentForm';
-import EvaluationForm from './evaluations/EvaluationForm'
+import Documents from './documents/Documents';
+import Evaluations from './evaluations/Evaluations'
 
 
 function App() {
@@ -21,9 +21,10 @@ function App() {
                         <Route path='/home' element={<Home/>}/>
                         <Route path='*' element={<Error/>}/>
 
-                        <Route path='/evaluations' element={<EvaluationForm/>} />
+                        {/*<Route path='/evaluations' element={<EvaluationForm/>} />*/}
+                        <Route path='/evaluations' element={<Evaluations/>} />
 
-                        <Route path='/documents' element={<DocumentForm/>} />
+                        <Route path='/documents' element={<Documents/>} />
 
                         <Route path='/dashboard' element={
                             <PrivateRoute>

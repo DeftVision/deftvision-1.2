@@ -1,28 +1,6 @@
 const evaluationModel = require ('../models/evaluationModel')
 
 
-exports.getEvaluations = async (req, res) => {
-    try {
-        const evaluations = await evaluationModel.find({});
-        if(!evaluations) {
-            return res.send({
-                message: 'No evaluations found',
-            })
-        } else {
-            return res.send({
-                evaluationCount: evaluations.length,
-                evaluations,
-            })
-        }
-    } catch (error) {
-        console.log(error)
-        return res.send({
-            message: 'Oops, something went wrong fetching the evaluations',
-            error,
-        })
-    }
-}
-
 exports.getDashboardEvaluationData = async (req, res) => {
     try {
         const evaluations = await evaluationModel
@@ -46,8 +24,6 @@ exports.getDashboardEvaluationData = async (req, res) => {
         })
     }
 }
-
-
 
 exports.getFoodScoresTrendData = async (req, res) => {
     try {
@@ -110,6 +86,30 @@ exports.getServiceScoresTrendData = async (req, res) => {
             return res.send({
                 evaluationCount: evaluations.length,
                 evaluations
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
+    }
+}
+
+
+
+exports.getEvaluations = async (req, res) => {
+    try {
+        const evaluations = await evaluationModel.find({});
+        if(!evaluations) {
+            return res.send({
+                message: 'No evaluations found',
+            })
+        } else {
+            return res.send({
+                evaluationCount: evaluations.length,
+                evaluations,
             })
         }
     } catch (error) {

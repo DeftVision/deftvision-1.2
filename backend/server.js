@@ -5,6 +5,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoute');
 const evaluationRoutes = require('./routes/evaluationRoute');
 const documentRoutes = require('./routes/documentRoute');
+const announcementRoutes = require('./routes/announcementRoute');
 
 const port = process.env.PORT || 5001;
 const connectDB = require('./config/db');
@@ -17,6 +18,7 @@ app.use(cors());
 app.use('/api/auth', authRoutes);
 app.use('/api/evaluation', evaluationRoutes);
 app.use('/api/document', documentRoutes);
+app.use('/api/announcement', announcementRoutes);
 
 
 

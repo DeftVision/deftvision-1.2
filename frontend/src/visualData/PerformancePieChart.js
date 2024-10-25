@@ -1,7 +1,3 @@
-// TODO: pick different metrics to measure
-// TODO: redesign UI
-// TODO: pick a different type of graph / chart?
-// TODO: pick different colors
 
 
 import { PieChart, Pie, Cell, ResponsiveContainer, Tooltip } from 'recharts'

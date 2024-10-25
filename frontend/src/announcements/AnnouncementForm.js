@@ -3,11 +3,6 @@ import { useState } from 'react'
 import roles from '../utilities/roleSelect';
 import priority from '../utilities/prioritySelect'
 
-
-
-
-
-
 const form_default = {
     name: '',
     priority: '',
@@ -16,7 +11,6 @@ const form_default = {
     subject: '',
     content: '',
 }
-
 
 export default function AnnouncementForm() {
     const [formData, setFormData] = useState(form_default)

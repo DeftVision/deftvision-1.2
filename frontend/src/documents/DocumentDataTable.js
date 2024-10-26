@@ -22,8 +22,6 @@ import { useTheme } from '@mui/material/styles'
 import { useState, useEffect } from 'react';
 import console from 'console-browserify';
 
-import { storage } from '../utilities/firebase'; // Ensure this path is correct
-import { ref, uploadBytesResumable, getDownloadURL } from 'firebase/storage';
 
 export default function DocumentDataTable({ refreshTrigger }) {
     const theme = useTheme();
@@ -44,7 +42,22 @@ export default function DocumentDataTable({ refreshTrigger }) {
             const _response = await response.json();
 
             if(response.ok && _response.documents) {
-                setDocuments(_response.documents)
+                const updatedDocuments = _response.documents.map((doc) => {
+                    const extension = doc.downloadUrl.split('?')[0].split('.').pop().toLowerCase();
+                    let fileType = 'other';
+                    if (['jpg', 'jpeg', 'png'].includes(extension)) fileType = 'Image';
+                    else if (extension === 'pdf') fileType = 'PDF';
+                    else if (['xlsx', 'xls'].includes(extension)) fileType = 'Excel';
+                    else if (['doc', 'docx'].includes(extension)) fileType = 'Word';
+                    else if (['ppt', 'pptx'].includes(extension)) fileType = 'PowerPoint';
+                    else if (extension === 'mp4') fileType = 'Video'
+
+                    return { ...doc, fileType}
+                })
+
+
+
+                setDocuments(updatedDocuments)
             } else {
                 console.error('Failed to fetch documents')
             }
@@ -125,7 +138,7 @@ export default function DocumentDataTable({ refreshTrigger }) {
             case 'jpg':
             case 'jpeg':
             case 'png':
-                return <img src={url} alt='document thumbnail' style={{width: '60px', height: '60px', objectFit: 'cover'}} />
+                return <img src={url} alt='document thumbnail' style={{width: '50px', height: '50px', objectFit: 'cover'}} />
             case 'mp4':
                 return <MovieCreation style={{color: '#ed5d09' }} />
             case 'pdf':
@@ -188,7 +201,13 @@ export default function DocumentDataTable({ refreshTrigger }) {
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'fileType'} // Track sorting state on fileType
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('fileType')} // Sort by fileType on click
+                                    >
                                         Type
+                                    </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
                                     Delete

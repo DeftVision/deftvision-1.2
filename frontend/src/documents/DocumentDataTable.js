@@ -11,7 +11,7 @@ import {
     TablePagination,
     Paper,
     TextField,
-    Typography
+    Typography, OutlinedInput, InputAdornment, FormControl
 } from '@mui/material'
 import {Delete, MovieCreation, Search } from '@mui/icons-material'
 import PdfIcon from '@mui/icons-material/PictureAsPdf'
@@ -21,6 +21,7 @@ import PowerPointIcon from '@mui/icons-material/Slideshow'
 import { useTheme } from '@mui/material/styles'
 import { useState, useEffect } from 'react';
 import console from 'console-browserify';
+import * as React from "react";
 
 
 export default function DocumentDataTable({ refreshTrigger }) {
@@ -170,13 +171,14 @@ export default function DocumentDataTable({ refreshTrigger }) {
                     justifyContent: 'space-between',
                     marginBottom: 2
                 }}>
-                    <TextField
-                        variant='outlined'
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        label='search'
-                        sx={{width: '300px'}}
-                    />
+                    <FormControl sx={{m: 1}}>
+                        <OutlinedInput
+                            id='outlined-adornment-search'
+                            startAdornment={<InputAdornment position='start'><Search /></InputAdornment>}
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
+                    </FormControl>
                 </Box>
                 <TableContainer sx={{justifyContent: 'center', alignItems: 'center'}}>
                     <Table sx={{minWidth: 700}} stickyHeader aria-label='document records table grid'>

@@ -1,5 +1,7 @@
 import {
     Box,
+    FormControl,
+    OutlinedInput,
     Paper,
     Table,
     TableCell,
@@ -9,8 +11,7 @@ import {
     TableContainer,
     TablePagination,
     TableSortLabel,
-    TextField,
-    Typography
+    Typography, InputAdornment
 } from "@mui/material";
 
 import { Search } from '@mui/icons-material'
@@ -100,13 +101,14 @@ export default function ScoreDataTable() {
                 <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10, marginTop: 5}} gutterBottom>All Scores</Typography>
 
                 <Box sx={{display: 'flex', justifyContent: 'space-between', marginBottom: 2}}>
-                    <TextField
-                        variant='outlined'
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        label='search'
-                        sx={{width: '30%'}}
-                    />
+                    <FormControl sx={{m: 1}}>
+                        <OutlinedInput
+                            id='outlined-adornment-search'
+                            startAdornment={<InputAdornment position='start'><Search /></InputAdornment>}
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
+                    </FormControl>
                 </Box>
 
                 <TableContainer>

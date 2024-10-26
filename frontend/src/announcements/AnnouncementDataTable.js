@@ -10,12 +10,15 @@ import {
     TableSortLabel,
     TablePagination,
     Paper,
-    TextField
+    OutlinedInput,
+    InputAdornment,
+    FormControl
 } from '@mui/material'
 import {Delete, Visibility, VisibilityOff, Search} from '@mui/icons-material'
 import {useState, useEffect} from 'react';
 import { useTheme } from '@mui/material/styles'
 import console from 'console-browserify';
+import * as React from "react";
 
 
 
@@ -144,13 +147,14 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
                     justifyContent: 'space-between',
                     marginBottom: 2
                 }}>
-                    <TextField
-                        variant='outlined'
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        label='search'
-                        sx={{width: '300px'}}
-                    />
+                    <FormControl sx={{m: 1}}>
+                        <OutlinedInput
+                            id='outlined-adornment-search'
+                            startAdornment={<InputAdornment position='start'><Search /></InputAdornment>}
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
+                    </FormControl>
                 </Box>
 
                 <TableContainer sx={{justifyContent: 'center', alignItems: 'center'}}>

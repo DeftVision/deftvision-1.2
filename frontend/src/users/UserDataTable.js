@@ -10,12 +10,13 @@ import {
     TableSortLabel,
     TablePagination,
     Paper,
-    TextField
+    TextField, OutlinedInput, InputAdornment, FormControl
 } from '@mui/material'
 import { Search, CheckCircleOutline, DoNotDisturbOnOutlined  } from '@mui/icons-material'
 import {useState, useEffect} from 'react';
 import { useTheme } from '@mui/material/styles'
 import console from 'console-browserify';
+import * as React from "react";
 
 export default function UserDataTable({ refreshTrigger }) {
     const theme = useTheme();
@@ -97,7 +98,7 @@ export default function UserDataTable({ refreshTrigger }) {
     })
 
     const filteredUsers = sortedUsers.filter((user) => {
-        return user.email.toLowerCase().includes(searchQuery.toLowerCase())
+        return user.username.toLowerCase().includes(searchQuery.toLowerCase())
     })
 
     const displayedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
@@ -124,13 +125,17 @@ export default function UserDataTable({ refreshTrigger }) {
                     justifyContent: 'space-between',
                     marginBottom: 2
                 }}>
-                    <TextField
-                        variant='outlined'
-                        value={searchQuery}
-                        onChange={handleSearch}
-                        label='search'
-                        sx={{width: '300px'}}
-                    />
+                    <FormControl sx={{m: 1}}>
+                        <OutlinedInput
+                            id='outlined-adornment-search'
+                            startAdornment={<InputAdornment position='start'><Search /></InputAdornment>}
+                            value={searchQuery}
+                            onChange={handleSearch}
+                        />
+                    </FormControl>
+                    {/*value={searchQuery}
+                    onChange={handleSearch}*/}
+
                 </Box>
 
                 <TableContainer sx={{justifyContent: 'center', alignItems: 'center'}}>

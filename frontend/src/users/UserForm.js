@@ -194,7 +194,7 @@ export default function UserForm( { onUserCreated }) {
                                     id='isActive'
                                     value={formData.isActive}
                                     onChange={handleFieldChange}
-
+                                    checked={formData.isActive}
                                 />}
                             label='is active'
                         />

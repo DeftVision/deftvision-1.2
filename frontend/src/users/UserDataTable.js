@@ -23,20 +23,22 @@ export default function UserDataTable({ refreshTrigger }) {
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [searchQuery, setSearchQuery] = useState('')
-    const [sortConfig, setSortConfig] = useState({key: 'firstName', direction: 'asc'});
+    const [sortConfig, setSortConfig] = useState({key: 'username', direction: 'asc'});
 
 
     async function getUsers() {
         try {
             const response = await fetch('http://localhost:5000/api/auth/users', {
-                method: 'GET'
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json'
+                }
             });
 
             const _response = await response.json();
 
             if (response.ok && _response.users) {
                 setUsers(_response.users)
-                console.log(_response.users)
 
             } else {
                 console.error('Failed to fetch announcements');
@@ -100,14 +102,15 @@ export default function UserDataTable({ refreshTrigger }) {
 
     const displayedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-    const handleChangePage = (e) => {
-        setRowsPerPage(+e.target.value)
-        setPage(0);
+    const handleChangePage = (e, newPage) => {
+        setPage(newPage);
     }
 
+
     const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(+e.target.value)
-        setPage(0)
+        const value = +e.target.value || 5;
+        setRowsPerPage(value)
+        setPage(0);
     }
 
 
@@ -136,11 +139,11 @@ export default function UserDataTable({ refreshTrigger }) {
                             <TableRow>
                                 <TableCell sx={{textAlign: 'center'}}>
                                     <TableSortLabel
-                                        active={sortConfig.key === 'email'}
+                                        active={sortConfig.key === 'username'}
                                         direction={sortConfig.direction}
-                                        onClick={() => handleSort('email')}
+                                        onClick={() => handleSort('username')}
                                     >
-                                        email
+                                        username
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
@@ -184,7 +187,7 @@ export default function UserDataTable({ refreshTrigger }) {
                                         }
                                     }}
                                 >
-                                    <TableCell sx={{textAlign: 'center' }}>{user.email}</TableCell>
+                                    <TableCell sx={{textAlign: 'center' }}>{user.username}</TableCell>
                                     <TableCell sx={{textAlign: 'center' }}>{user.location}</TableCell>
                                     <TableCell sx={{textAlign: 'center' }}>{user.role}</TableCell>
                                     <TableCell sx={{textAlign: 'center' }}>

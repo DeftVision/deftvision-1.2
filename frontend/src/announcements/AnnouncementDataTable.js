@@ -124,13 +124,13 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
 
     const displayedAnnouncements = filteredAnnouncements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
-    const handleChangePage = (e) => {
-        setRowsPerPage(+e.target.value)
-        setPage(0);
+    const handleChangePage = (e, newPage) => {
+        setPage(newPage);
     }
 
     const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(+e.target.value)
+        const value = +e.target.value || 5;
+        setRowsPerPage(value)
         setPage(0)
     }
 

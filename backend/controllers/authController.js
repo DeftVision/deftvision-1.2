@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 
 
 
+
 const SECRET_KEY = process.env.SECRET_KEY;
 
 
@@ -158,7 +159,7 @@ exports.toggleUserStatus = async (req, res) => {
     try {
         const {id} = req.params;
         const {isActive} = req.body;
-        const user = await userModel.findByIdAndUpdate(id, isActive, { new: true });
+        const user = await userModel.findByIdAndUpdate(id, req.body, { new: true });
         if(!user) {
             return res.send({
                 error: 'User not found',
@@ -171,6 +172,31 @@ exports.toggleUserStatus = async (req, res) => {
         }
     }  catch (error) {
 
+    }
+}
+
+
+exports.getUserData = async (req, res) => {
+    try {
+        const users = await userModel
+            .find({})
+            .select('username location role isActive');
+        if(!users) {
+            return res.send({
+                message: 'No users found',
+            });
+        } else {
+            return res.send({
+                userCount: users.length,
+                users
+            })
+        }
+    } catch (error) {
+        console.log(error)
+        return res.send({
+            message: 'Oops, something went wrong fetching the evaluations',
+            error,
+        })
     }
 }
 

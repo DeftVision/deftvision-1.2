@@ -2,6 +2,8 @@ import {useEffect, useState} from 'react'
 import {Box, Card, CardActions, CardContent, CardHeader, Typography} from '@mui/material';
 import {Line, LineChart, ResponsiveContainer, XAxis} from 'recharts';
 import {ArrowDownward, ArrowUpward} from '@mui/icons-material';
+import { useTheme } from '@mui/material/styles';
+
 
 export default function ScoresTrend() {
     const [evaluations, setEvaluations] = useState([])
@@ -14,6 +16,7 @@ export default function ScoresTrend() {
     const [foodPercentageChange, setFoodPercentageChange] = useState(null);
     const [cleanPercentageChange, setCleanPercentageChange] = useState(null);
     const [servicePercentageChange, setServicePercentageChange] = useState(null);
+    const theme = useTheme();
 
     useEffect(() => {
         const getEvaluations = async () => {
@@ -181,7 +184,11 @@ export default function ScoresTrend() {
                     </Box>
                 </CardContent>
 
-                <CardActions sx={{padding: 2, color: '#000'}}>
+                <CardActions sx={{
+                        padding: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#fff' : 'default',
+                        color: theme.palette.mode === 'dark' ? '#000' : '#000'
+                }}>
                     <Typography variant='overline'>Avg Final Score: </Typography>
                     <Typography
                         variant='overline'>{averageFinalScores.length > 0 ? averageFinalScores[averageFinalScores.length - 1].avgFinalScore : 'N/A'}</Typography>
@@ -218,7 +225,13 @@ export default function ScoresTrend() {
                     </Box>
                 </CardContent>
 
-                <CardActions sx={{padding: 2, color: '#000'}}>
+                <CardActions
+                    sx={{
+                        padding: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#fff' : 'default',
+                        color: theme.palette.mode === 'dark' ? '#000' : '#000'
+                    }}
+                >
                     <Typography variant='overline'>Avg Food Score: </Typography>
                     <Typography
                         variant='overline'>{averageFoodScores.length > 0 ? averageFoodScores[averageFoodScores.length - 1].avgFoodScore : 'N/A'}</Typography>
@@ -255,7 +268,13 @@ export default function ScoresTrend() {
                     </Box>
                 </CardContent>
 
-                <CardActions sx={{padding: 2, color: '#000'}}>
+                <CardActions
+                    sx={{
+                        padding: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#fff' : 'default',
+                        color: theme.palette.mode === 'dark' ? '#000' : '#000'
+                    }}
+                >
                     <Typography variant='overline'>Avg Clean Score: </Typography>
                     <Typography
                         variant='overline'>{averageCleanScores.length > 0 ? averageCleanScores[averageCleanScores.length - 1].avgCleanScore : 'N/A'}</Typography>
@@ -289,7 +308,13 @@ export default function ScoresTrend() {
                     </Box>
                 </CardContent>
 
-                <CardActions sx={{padding: 2, color: '#000'}}>
+                <CardActions
+                    sx={{
+                        padding: 2,
+                        backgroundColor: theme.palette.mode === 'dark' ? '#fff' : 'default',
+                        color: theme.palette.mode === 'dark' ? '#000' : '#000'
+                    }}
+                >
                     <Typography variant='overline'>Avg Service Score: </Typography>
                     <Typography
                         variant='overline'>{averageServiceScores.length > 0 ? averageServiceScores[averageServiceScores.length - 1].avgServiceScore : 'N/A'}</Typography>

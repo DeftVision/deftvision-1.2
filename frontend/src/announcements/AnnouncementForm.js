@@ -12,7 +12,7 @@ const form_default = {
     content: '',
 }
 
-export default function AnnouncementForm() {
+export default function AnnouncementForm({ onAnnouncementCreated}) {
     const [formData, setFormData] = useState(form_default)
 
     const handleFieldChange = (e) => {
@@ -37,8 +37,7 @@ export default function AnnouncementForm() {
             const _response = await response.json();
             console.log(_response);
             if(response.ok) {
-                console.log(_response.announcements)
-                console.log(_response);
+               onAnnouncementCreated();
             } else {
                 console.log('error posting announcement')
             }

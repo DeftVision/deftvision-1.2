@@ -1,13 +1,15 @@
-import { Box, styled, Table, TableHead, TableBody, TableContainer, TableRow, TableCell, Typography } from '@mui/material'
-import { useEffect, useState } from 'react'
-import { Link } from 'react-router-dom'
+import { Box, Stack, Typography } from '@mui/material'
+import { useState } from 'react'
 import { DocumentForm, DocumentDataTable } from '../documents/index'
 
 export default function Documents() {
+    const [refreshDocuments, setRefreshDocuments] = useState(false);
+
+
 
     return (
         <Box>
-            <Typography variant='overline'>Document home page</Typography>
+            <Typography variant='overline'>Document Manager</Typography>
 
             <DocumentForm />
 

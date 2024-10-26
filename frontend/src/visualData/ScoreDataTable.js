@@ -16,6 +16,7 @@ import {
 import { Search } from '@mui/icons-material'
 import { useState, useEffect } from "react";
 import * as React from 'react';
+import { useTheme } from '@mui/material/styles'
 
 
 
@@ -25,7 +26,7 @@ export default function ScoreDataTable() {
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [searchQuery, setSearchQuery] = useState('')
     const [sortConfig, setSortConfig] = useState({key: 'date', direction: 'asc'});
-
+    const theme = useTheme();
 
     async function getEvaluations () {
         try {
@@ -174,8 +175,10 @@ export default function ScoreDataTable() {
                                             key={evaluation._id}
                                             sx={{
                                                 '&:hover': {
-                                                    backgroundColor: '#f5f5f5',
-                                                    cursor: 'none'
+                                                    backgroundColor: theme.palette.action.hover,
+                                                    color: theme.palette.mode === 'dark' ? '#000' : '#fff',
+                                                    cursor: 'default',
+
                                                 }
                                             }}
                                         >

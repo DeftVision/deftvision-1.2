@@ -115,7 +115,7 @@ export default function ScoreDataTable() {
                                 <TableCell>
                                     <TableSortLabel
                                         active={sortConfig.key === 'date'}
-                                        direction={sortConfig.direction}
+                                      direction={sortConfig.direction}
                                         onClick={() => handleSort('date')}
                                     >
                                         Date

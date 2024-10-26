@@ -1,7 +1,6 @@
 const announcementModel = require("../models/announcementModel");
 
 
-
 exports.getAnnouncement = async (req, res) => {
     try {
         const { id } = req.params;
@@ -124,6 +123,31 @@ exports.deleteAnnouncement = async (req, res) => {
         return res.send({
             message: 'something went wrong',
             error,
+        })
+    }
+}
+
+
+exports.togglePublish = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const { publish } = req.body;
+        const announcement = await announcementModel.findByIdAndUpdate(id, { publish }, { new: true });
+        if (!announcement) {
+            return res.send({
+                error: 'Announcement not found'
+            });
+        } else {
+            return res.send({
+                message: 'Announcement publish status updated successfully',
+                announcement,
+            });
+        }
+    } catch (error) {
+        console.log(error);
+        return res.send({
+            message: 'something went wrong',
+            error: error,
         })
     }
 }

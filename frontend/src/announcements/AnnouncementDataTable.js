@@ -15,12 +15,14 @@ import {
 } from '@mui/material'
 import {Delete, Visibility, VisibilityOff, Search} from '@mui/icons-material'
 import {useState, useEffect} from 'react';
-import {Link} from 'react-router-dom'
+import { useTheme } from '@mui/material/styles'
+import console from 'console-browserify';
 
 
-export default function AnnouncementDataTable() {
+
+export default function AnnouncementDataTable({ refreshTrigger }) {
+    const theme = useTheme();
     const [announcements, setAnnouncements] = useState([])
-    const [publish, setPublish] = useState(null);
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [searchQuery, setSearchQuery] = useState('')
@@ -30,10 +32,7 @@ export default function AnnouncementDataTable() {
     async function getAnnouncements() {
         try {
             const response = await fetch('http://localhost:5000/api/announcement/announcements', {
-                method: 'GET',
-                header: {
-                    'Content-Type': 'application/json'
-                }
+                method: 'GET'
             });
 
             const _response = await response.json();
@@ -52,62 +51,66 @@ export default function AnnouncementDataTable() {
 
     useEffect(() => {
         getAnnouncements();
-    }, [])
+    }, [refreshTrigger])
 
-    async function deleteAnnouncement(announcementId) {
+    // delete record from the backend and update the ui in data table
+    const handleDelete = async (announcementId) => {
         try {
             const response = await fetch(`http://localhost:5000/api/announcement/delete/${announcementId}`, {
                 method: 'DELETE',
-                headers: {
-                    'Content-Type': 'application/json',
-                }
-            })
+            });
 
-            const _response = await response.json();
-            if (response.ok && _response.announcements) {
-                setAnnouncements(announcements.filter(announcement => announcement._id !== announcementId));
+            if (response.ok) {
+                // Remove the deleted announcement from the local state
+                setAnnouncements((prev) =>
+                    prev.filter((announcement) => announcement._id !== announcementId)
+                );
             } else {
-                console.log(_response.error);
+                console.error('Failed to delete announcement');
             }
         } catch (error) {
-            console.error('it\'s not working...')
+            console.error('Error deleting announcement:', error);
         }
-    }
+    };
 
-    useEffect(() => {
-        deleteAnnouncement();
-    })
-
-    async function changePublishStatus(e) {
+    // toggle publish status in data table
+    const handleTogglePublish = async (announcementId, currentStatus) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/announcement/update/${announcements._id}`, {
+            const response = await fetch (`http://localhost:5000/api/announcement/toggle-publish/${announcementId}`, {
                 method: 'PATCH',
-                body: JSON.stringify(announcements.publish),
+                body: JSON.stringify({ publish: !currentStatus }),
                 headers: {
-                    'Content-Type': 'application/json'
+                    "Content-Type": "application/json"
                 }
-            })
-            const _response = await response.json();
-            if(response.ok && _response.announcements.publish === true) {
-
+            });
+            if (response.ok) {
+                setAnnouncements((prev) =>
+                    prev.map((announcement) =>
+                        announcement._id === announcementId
+                        ? { ...announcement, publish: !currentStatus }
+                            : announcement
+                    )
+                )
+            } else {
+                console.log('Failed to updated published status')
             }
-
         } catch (error) {
-
+            console.error('Error toggling publish status:', error);
         }
     }
+
+    // search sort filter in data table
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
     }
 
     const handleSort = (key) => {
-        let direction = 'asc'
-        if (sortConfig.key === sortConfig.direction === 'asc') {
-            direction = 'desc'
-        }
-        setSortConfig({key, direction})
-    }
+        setSortConfig((prevSortConfig) => ({
+            key,
+            direction: prevSortConfig.key === key && prevSortConfig.direction === 'asc' ? 'desc' : 'asc'
+        }));
+    };
 
     const sortedAnnouncements = [...announcements].sort((a, b) => {
         if (sortConfig.direction === 'asc') {
@@ -120,8 +123,7 @@ export default function AnnouncementDataTable() {
         return announcement.name.toLowerCase().includes(searchQuery.toLowerCase())
     })
 
-    // TODO : where does this get called??
-    // const displayedAnnouncements = filteredAnnouncements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const displayedAnnouncements = filteredAnnouncements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const handleChangePage = (e) => {
         setRowsPerPage(+e.target.value)
@@ -189,12 +191,13 @@ export default function AnnouncementDataTable() {
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {announcements.map((announcement) => (
+                            {displayedAnnouncements.map((announcement) => (
                                 <TableRow
                                     key={announcement._id}
                                     sx={{
                                         '&:hover': {
-                                            backgroundColor: '#f5f5f5',
+                                            backgroundColor: theme.palette.action.hover,
+                                            color: theme.palette.mode === 'dark' ? '#000' : '#fff',
                                             cursor: 'default',
 
                                         }
@@ -203,25 +206,21 @@ export default function AnnouncementDataTable() {
                                     <TableCell sx={{textAlign: 'center'}}>{announcement.name}</TableCell>
                                     <TableCell sx={{textAlign: 'center'}}>{announcement.subject}</TableCell>
                                     <TableCell sx={{textAlign: 'center'}}>
-                                        {announcement.publish ?
+                                        {announcement.publish ? (
                                             <Visibility
-                                                onClick={changePublishStatus}
-                                                sx={{
-                                                    cursor: 'pointer',
-                                                    color: '#1976d2'
-                                                }}/>
-                                            :
+                                                onClick={() => handleTogglePublish(announcement._id, announcement.publish)}
+                                                sx={{ cursor: 'pointer', color: '#1976d2' }}
+                                            />
+                                            ) : (
                                             <VisibilityOff
-                                                onClick={changePublishStatus}
-                                                sx={{
-                                                    cursor: 'pointer',
-                                                    color: '#aaa'
-                                                }}/>
-                                        }
+                                                onClick={() => handleTogglePublish(announcement._id, announcement.publish)}
+                                                sx={{ cursor: 'pointer', color: '#aaa' }}
+                                            />
+                                        )}
                                     </TableCell>
-                                    <TableCell>
-                                        <IconButton>
-                                            <Delete onClick={deleteAnnouncement}/>
+                                    <TableCell sx={{ textAlign: 'center' }}>
+                                        <IconButton onClick={() => handleDelete(announcement._id)}>
+                                            <Delete />
                                         </IconButton>
                                     </TableCell>
                                 </TableRow>
@@ -238,8 +237,6 @@ export default function AnnouncementDataTable() {
                     page={page}
                     onPageChange={handleChangePage}
                     onRowsPerPageChange={handleChangeRowsPerPage}
-
-
                 />
             </Paper>
         </Box>

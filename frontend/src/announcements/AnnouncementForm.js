@@ -12,7 +12,7 @@ const form_default = {
     content: '',
 }
 
-export default function AnnouncementForm({ onAnnouncementCreated}) {
+export default function AnnouncementForm({ onAnnouncementCreated }) {
     const [formData, setFormData] = useState(form_default)
 
     const handleFieldChange = (e) => {
@@ -47,8 +47,6 @@ export default function AnnouncementForm({ onAnnouncementCreated}) {
         }
     }
 
-console.log(formData)
-
     return (
         <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}} >
             <Paper elevation={8} width='100%' sx={{padding: 5, maxWidth: '1200px', width: '90%'}}>
@@ -62,6 +60,7 @@ console.log(formData)
                 <Stack direction='column' spacing={3}>
                     <TextField
                         type='text'
+                        name='name'
                         label='Name'
                         value={formData.name}
                         onChange={(e) => {

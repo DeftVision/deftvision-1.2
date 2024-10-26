@@ -12,7 +12,7 @@ export default function Announcements() {
         <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', alignItems: 'center', marginTop: 5, textAlign: 'center', width: '100%'}}>
            <Stack direction='column' space={3} sx={{ width: '100%', maxWidth: '1200px'}}>
 
-               <Typography variant="overline" sx={{fontSize: '1rem'}}>Announcement manager</Typography>
+               <Typography variant="overline" sx={{fontSize: '1rem'}}>Announcement management</Typography>
 
                <AnnouncementForm  onAnnouncementCreated={toggleRefresh} />
 

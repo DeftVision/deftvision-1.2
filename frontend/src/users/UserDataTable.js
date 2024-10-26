@@ -12,32 +12,31 @@ import {
     Paper,
     TextField
 } from '@mui/material'
-import {Delete, Visibility, VisibilityOff, Search} from '@mui/icons-material'
+import { Search, CheckCircleOutline, DoNotDisturbOnOutlined  } from '@mui/icons-material'
 import {useState, useEffect} from 'react';
 import { useTheme } from '@mui/material/styles'
 import console from 'console-browserify';
 
-
-
-export default function AnnouncementDataTable({ refreshTrigger }) {
+export default function UserDataTable({ refreshTrigger }) {
     const theme = useTheme();
-    const [announcements, setAnnouncements] = useState([])
+    const [users, setUsers] = useState([])
     const [page, setPage] = useState(0)
     const [rowsPerPage, setRowsPerPage] = useState(5)
     const [searchQuery, setSearchQuery] = useState('')
-    const [sortConfig, setSortConfig] = useState({key: 'name', direction: 'asc'});
+    const [sortConfig, setSortConfig] = useState({key: 'firstName', direction: 'asc'});
 
 
-    async function getAnnouncements() {
+    async function getUsers() {
         try {
-            const response = await fetch('http://localhost:5000/api/announcement/announcements', {
+            const response = await fetch('http://localhost:5000/api/auth/users', {
                 method: 'GET'
             });
 
             const _response = await response.json();
 
-            if (response.ok && _response.announcements) {
-                setAnnouncements(_response.announcements)
+            if (response.ok && _response.users) {
+                setUsers(_response.users)
+                console.log(_response.users)
 
             } else {
                 console.error('Failed to fetch announcements');
@@ -49,56 +48,33 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
     }
 
     useEffect(() => {
-        getAnnouncements();
+        getUsers();
     }, [refreshTrigger])
 
-    // delete record from the backend and update the ui in data table
-    const handleDelete = async (announcementId) => {
+    const handleToggleStatus = async (userId, currentStatus) => {
         try {
-            const response = await fetch(`http://localhost:5000/api/announcement/delete/${announcementId}`, {
-                method: 'DELETE',
-            });
-
-            if (response.ok) {
-                // Remove the deleted announcement from the local state
-                setAnnouncements((prev) =>
-                    prev.filter((announcement) => announcement._id !== announcementId)
-                );
-            } else {
-                console.error('Failed to delete announcement');
-            }
-        } catch (error) {
-            console.error('Error deleting announcement:', error);
-        }
-    };
-
-    // toggle publish status in data table
-    const handleTogglePublish = async (announcementId, currentStatus) => {
-        try {
-            const response = await fetch (`http://localhost:5000/api/announcement/toggle-publish/${announcementId}`, {
+            const response = await fetch (`http://localhost:5000/api/auth/toggle-status/${userId}`, {
                 method: 'PATCH',
-                body: JSON.stringify({ publish: !currentStatus }),
+                body: JSON.stringify({ isActive: !currentStatus }),
                 headers: {
                     "Content-Type": "application/json"
                 }
             });
             if (response.ok) {
-                setAnnouncements((prev) =>
-                    prev.map((announcement) =>
-                        announcement._id === announcementId
-                        ? { ...announcement, publish: !currentStatus }
-                            : announcement
+                setUsers((prev) =>
+                    prev.map((user) =>
+                        user._id === userId
+                            ? { ...user, isActive: !currentStatus }
+                            : user
                     )
                 )
             } else {
-                console.log('Failed to update published status')
+                console.log('Failed to update user status')
             }
         } catch (error) {
-            console.error('Error toggling publish status:', error);
+            console.error('Error toggling user status:', error);
         }
     }
-
-    // search sort filter in data table
 
     const handleSearch = (e) => {
         setSearchQuery(e.target.value)
@@ -111,18 +87,18 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
         }));
     };
 
-    const sortedAnnouncements = [...announcements].sort((a, b) => {
+    const sortedUsers = [...users].sort((a, b) => {
         if (sortConfig.direction === 'asc') {
             return a[sortConfig.key] > b[sortConfig.key] ? 1 : -1
         }
         return a[sortConfig.key] < b[sortConfig.key] ? 1 : -1
     })
 
-    const filteredAnnouncements = sortedAnnouncements.filter((announcement) => {
-        return announcement.name.toLowerCase().includes(searchQuery.toLowerCase())
+    const filteredUsers = sortedUsers.filter((user) => {
+        return user.email.toLowerCase().includes(searchQuery.toLowerCase())
     })
 
-    const displayedAnnouncements = filteredAnnouncements.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
+    const displayedUsers = filteredUsers.slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage);
 
     const handleChangePage = (e) => {
         setRowsPerPage(+e.target.value)
@@ -133,6 +109,7 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
         setRowsPerPage(+e.target.value)
         setPage(0)
     }
+
 
     return (
         <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}}>
@@ -154,84 +131,84 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
                 </Box>
 
                 <TableContainer sx={{justifyContent: 'center', alignItems: 'center'}}>
-                    <Table sx={{minWidth: 700}} stickyHeader aria-label='announcement data table grid'>
+                    <Table sx={{minWidth: 700}} stickyHeader aria-label='user data table grid'>
                         <TableHead sx={{justifyContent: 'center'}}>
                             <TableRow>
                                 <TableCell sx={{textAlign: 'center'}}>
                                     <TableSortLabel
-                                        active={sortConfig.key === 'name'}
+                                        active={sortConfig.key === 'email'}
                                         direction={sortConfig.direction}
-                                        onClick={() => handleSort('name')}
+                                        onClick={() => handleSort('email')}
                                     >
-                                        Name
+                                        email
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
                                     <TableSortLabel
-                                        active={sortConfig.key === 'subject'}
+                                        active={sortConfig.key === 'location'}
                                         direction={sortConfig.direction}
-                                        onClick={() => handleSort('subject')}
+                                        onClick={() => handleSort('location')}
                                     >
-                                        Subject
+                                        location
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
                                     <TableSortLabel
-                                        active={sortConfig.key === 'publish'}
+                                        active={sortConfig.key === 'role'}
                                         direction={sortConfig.direction}
-                                        onClick={() => handleSort('publish')}
+                                        onClick={() => handleSort('role')}
                                     >
-                                        Published
+                                        role
                                     </TableSortLabel>
                                 </TableCell>
                                 <TableCell sx={{textAlign: 'center'}}>
-                                    Delete
+                                    <TableSortLabel
+                                        active={sortConfig.key === 'isActive'}
+                                        direction={sortConfig.direction}
+                                        onClick={() => handleSort('isActive')}
+                                    >
+                                        status
+                                    </TableSortLabel>
                                 </TableCell>
                             </TableRow>
                         </TableHead>
                         <TableBody>
-                            {displayedAnnouncements.map((announcement) => (
+                            {displayedUsers.map((user) => (
                                 <TableRow
-                                    key={announcement._id}
+                                    key={user._id}
                                     sx={{
                                         '&:hover': {
                                             backgroundColor: theme.palette.action.hover,
                                             color: theme.palette.mode === 'dark' ? '#000' : '#fff',
-                                            cursor: 'default',
-
+                                            cursor: 'default'
                                         }
                                     }}
                                 >
-                                    <TableCell sx={{textAlign: 'center'}}>{announcement.name}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>{announcement.subject}</TableCell>
-                                    <TableCell sx={{textAlign: 'center'}}>
-                                        {announcement.publish ? (
-                                            <Visibility
-                                                onClick={() => handleTogglePublish(announcement._id, announcement.publish)}
-                                                sx={{ cursor: 'pointer', color: '#1976d2' }}
+                                    <TableCell sx={{textAlign: 'center' }}>{user.email}</TableCell>
+                                    <TableCell sx={{textAlign: 'center' }}>{user.location}</TableCell>
+                                    <TableCell sx={{textAlign: 'center' }}>{user.role}</TableCell>
+                                    <TableCell sx={{textAlign: 'center' }}>
+                                        {user.isActive ? (
+                                            <CheckCircleOutline
+                                                onClick={() => handleToggleStatus(user._id, user.isActive)}
+                                                sx={{ cursor: 'pointer', color: '#1976d2'}}
                                             />
-                                            ) : (
-                                            <VisibilityOff
-                                                onClick={() => handleTogglePublish(announcement._id, announcement.publish)}
-                                                sx={{ cursor: 'pointer', color: '#aaa' }}
+                                        ) : (
+                                            <DoNotDisturbOnOutlined
+                                                onClick={() => handleToggleStatus(user._id, user.isActive)}
+                                               sx={{ cursor: 'pointer', color: '#aaa'}}
                                             />
                                         )}
                                     </TableCell>
-                                    <TableCell sx={{ textAlign: 'center' }}>
-                                        <IconButton onClick={() => handleDelete(announcement._id)}>
-                                            <Delete />
-                                        </IconButton>
-                                    </TableCell>
                                 </TableRow>
                             ))}
-
                         </TableBody>
                     </Table>
                 </TableContainer>
                 <TablePagination
                     rowsPerPageOptions={[5, 10, 25, 50]}
                     component='div'
-                    count={announcements.length}
+                    count={users.length}
                     rowsPerPage={rowsPerPage}
                     page={page}
                     onPageChange={handleChangePage}

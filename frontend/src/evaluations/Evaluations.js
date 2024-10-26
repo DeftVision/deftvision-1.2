@@ -7,7 +7,7 @@ export default function Evaluations() {
 
     return (
         <Box>
-            <Typography variant='overline'>evaluation home page</Typography>
+            <Typography variant='overline'>evaluation management</Typography>
 
             <EvaluationForm/>
 

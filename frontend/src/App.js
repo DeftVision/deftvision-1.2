@@ -1,12 +1,13 @@
 import {Box} from '@mui/material'
 import {Route, Routes} from 'react-router-dom';
 
-import {Error} from './pages/index';
+import {Error, Home} from './pages/index';
 import {Dashboard, Login, Navbar} from './components/index';
 import {PrivateRoute} from './utilities/index';
 import Documents from './documents/Documents';
 import Evaluations from './evaluations/Evaluations'
 import Announcements from './announcements/Announcements'
+import Users from './users/Users'
 
 
 function App() {
@@ -18,7 +19,6 @@ function App() {
                 <div className="App">
                     <Routes>
                         <Route path='/login' element={<Login/>}/>
-
 
                         <Route path='*' element={<Error/>}/>
 
@@ -43,6 +43,12 @@ function App() {
                                 <Dashboard/>
                             </PrivateRoute>
                         }/>
+
+                        <Route path='/users' element={
+                            <PrivateRoute>
+                                <Users />
+                            </PrivateRoute>
+                        } />
 
                     </Routes>
                 </div>

@@ -112,9 +112,15 @@ export default function DocumentForm({ onDocumentCreated }) {
     }, [uploading, formData.downloadUrl]);
 
     return (
-        <Box sx={{ p: 3, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 5 }}>
-            <Paper elevation={8} width="100%" sx={{ padding: 5, maxWidth: '1200px', width: '90%' }}>
-                <Box component="form" onSubmit={handleSubmit}>
+        <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}} >
+            <Paper elevation={8} width='100%' sx={{padding: 5, maxWidth: '1200px', width: '90%'}}>
+                <Box
+                    component='form'
+                    onSubmit={handleSubmit}
+                    noValidate
+                    sx={{marginTop: 4}}
+
+                >
                     <Stack direction="column" spacing={3}>
                         <TextField
                             label="Title"

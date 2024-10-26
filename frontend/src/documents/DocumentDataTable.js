@@ -13,7 +13,7 @@ import {
     TextField,
     Typography
 } from '@mui/material'
-import {Delete, Search } from '@mui/icons-material'
+import {Delete, MovieCreation, Search } from '@mui/icons-material'
 import PdfIcon from '@mui/icons-material/PictureAsPdf'
 import ExcelIcon from '@mui/icons-material/GridOn'
 import WordIcon from '@mui/icons-material/Description'
@@ -107,14 +107,14 @@ export default function DocumentDataTable({ refreshTrigger }) {
     const displayedDocuments = filteredDocuments.slice(page * rowsPerPage, page + rowsPerPage + rowsPerPage);
 
     // logic to scroll pages of data
-    const handleChangePage = (e) => {
-        setRowsPerPage(+e.target.value)
-        setPage(0);
+    const handleChangePage = (e, newPage) => {
+        setPage(newPage);
     }
 
     // logic to change row count being displayed
     const handleChangeRowsPerPage = (e) => {
-        setRowsPerPage(+e.target.value)
+        const value = +e.target.value
+        setRowsPerPage(value);
         setPage(0)
     }
 
@@ -126,6 +126,8 @@ export default function DocumentDataTable({ refreshTrigger }) {
             case 'jpeg':
             case 'png':
                 return <img src={url} alt='document thumbnail' style={{width: '60px', height: '60px', objectFit: 'cover'}} />
+            case 'mp4':
+                return <MovieCreation style={{color: '#ed5d09' }} />
             case 'pdf':
                 return <PdfIcon style={{ color: '#ED2224' }} />
             case 'xlsx':

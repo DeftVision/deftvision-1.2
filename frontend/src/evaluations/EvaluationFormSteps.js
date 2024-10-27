@@ -1,6 +1,7 @@
 import { useState } from 'react';
-import { Box, Button, Step, StepButton, Stepper, TextField, Paper, Stack, FormControl, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
+import { Box, Button, InputLabel, Step, StepButton, Stepper, TextField, Paper, Stack, FormControl, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import location from '../utilities/locationSelect'
 
 const form_defaults = {
     date: new Date().toISOString().slice(0, 16),
@@ -64,7 +65,14 @@ export default function EvaluationForm() {
                     <Stack spacing={2}>
                         <TextField type='datetime-local' name='date' label='Date' value={formData.date} onChange={handleFieldChange} />
                         <FormControl>
-                            <Select variant='outlined' name='location' value={formData.location} onChange={handleFieldChange} />
+                            <InputLabel>Location</InputLabel>
+                            <Select variant='outlined' name='location' value={formData.location} onChange={handleFieldChange} label='Location' sx={{textAlign: 'start'}}>
+                                {location.map((location) => (
+                                    <MenuItem key={location} value={location}>
+                                        {location}
+                                    </MenuItem>
+                                ))}
+                            </Select>
                         </FormControl>
                         <FormControlLabel control={<Switch name='greeting' checked={formData.greeting} onChange={handleFieldChange} />} label='Greeting' />
                     </Stack>

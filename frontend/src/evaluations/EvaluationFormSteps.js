@@ -12,11 +12,27 @@ import {
     Step,
     StepButton,
     Stepper,
+    styled,
     Switch,
-    TextField
+    TextField,
+    LinearProgress,
+    Typography
 } from '@mui/material';
+import {deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
+import {v4 as uuidv4} from 'uuid';
 import location from '../utilities/locationSelect'
+
+const getCurrentDateTime = () => {
+    const now = new Date();
+    const year = now.getFullYear();
+    const month = String(now.getMonth() + 1).padStart(2, '0');
+    const day = String(now.getDate()).padStart(2, '0');
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    return `${year}-${month}-${day}T${hours}:${minutes}`;
+};
+
 
 const form_defaults = {
     date: new Date().toISOString().slice(0, 16),
@@ -37,13 +53,29 @@ const form_defaults = {
 
 }
 
+const VisuallyHiddenInput = styled('input')({
+    clip: 'rect(0 0 0 0)',
+    clipPath: 'inset(50%)',
+    height: 1,
+    overflow: 'hidden',
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    whiteSpace: 'nowrap',
+    width: 1,
+});
+
+
 
 export default function EvaluationForm() {
     const [formData, setFormData] = useState(form_defaults);
     const [currentStep, setCurrentStep] = useState(0);
     const [completed, setCompleted] = useState({});
-
     const steps = ['Basic Info', 'Interaction', 'Scores', 'Final Details'];
+    const [uploadProgress, setUploadProgress] = useState(0);
+    const [uploading, setUploading] = useState('default');
+    const [fileName, setFileName] = useState('');
+    const [file, setFile] = useState(null);
 
     const handleFieldChange = (e) => {
         const { name, value, type, checked } = e.target;
@@ -76,13 +108,116 @@ export default function EvaluationForm() {
         setCurrentStep((prev) => (prev > 0 ? prev - 1: prev));
     };
 
-    const handleComplete = () => {
-        setCompleted((prevCompleted) => ({
-            ...prevCompleted,
-            [currentStep]: true,
-        }))
-        handleNext();
+    const handleComplete = async (e) => {
+        e.preventDefault();
+        try {
+            setCompleted((prevCompleted) => ({
+                ...prevCompleted,
+                [currentStep]: true,
+            }))
+            handleNext();
+                if (file) {
+                    if (formData.uniqueFileName) {
+                        await deleteExistingFile(`uploads/${formData.uniqueFileName}`);
+                    }
+                    await uploadFileToFirebase();
+                } else {
+                    await saveToDb();
+                }
+
+        } catch (error) {
+            console.log('Failed to upload file or save evaluation', 'error');
+        }
     }
+
+
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
+        if (selectedFile) {
+            setFileName(selectedFile.name);
+            setFile(selectedFile);
+        }
+    }
+
+    const deleteExistingFile = async (filePath) => {
+        const storage = getStorage();
+        const fileRef = ref(storage, filePath);
+        try {
+            await deleteObject(fileRef);
+            console.log(`File ${filePath} deleted successfully`);
+        } catch (error) {
+            console.log('Failed to delete evaluation', error);
+        }
+    }
+
+    const uploadFileToFirebase = async () => {
+        if (file) {
+            const uniqueFileName = `${uuidv4()}-${file.name}`
+            const storage = getStorage();
+            const storageRef = ref(storage, `uploads/${uniqueFileName}`);
+            const uploadTask = uploadBytesResumable(storageRef, file);
+
+            setUploading('uploading');
+
+            uploadTask.on(
+                'state_changed',
+                (snapshot) => {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    setUploadProgress(progress);
+                },
+                (error) => {
+                    console.error('upload failed', error);
+                    setUploading('error');
+                    console.log('Upload failed', error);
+                },
+                async () => {
+                    try {
+                        const downloadUrl = await getDownloadURL(uploadTask.snapshot.ref);
+                        setFormData((prevForm) => ({
+                            ...prevForm,
+                            downloadUrl,
+                            uniqueFileName,
+                        }));
+                        setUploading('success');
+                        console.log('Upload successfully', 'success');
+                    } catch (error) {
+                        setUploading('error');
+                        console.log('Failed to get download URL', 'error');
+                    }
+                }
+            );
+        } else {
+            throw new Error('No file selected');
+        }
+    };
+
+    const saveToDb = async () => {
+
+        let url = 'http://localhost:5000/api/evaluation/new/';
+        let method = 'POST';
+
+        try {
+            const response = await fetch(url, {
+                method: method,
+                body: JSON.stringify(formData),
+                headers: {
+                    'Content-Type': 'application/json'
+                }
+            });
+
+            const _response = await response.json();
+            if (!response.ok) {
+                console.log(_response.message || 'Error saving form', 'error')
+            } else {
+                console.log(_response.message, 'success');
+            }
+
+        } catch (error) {
+            console.log('Error saving form', 'error');
+        }
+    };
+
+
 
     const getStepContent = (step) => {
         switch (step) {
@@ -128,8 +263,15 @@ export default function EvaluationForm() {
                        <TextField name='comments' label='Comments' multiline maxRows={4} value={formData.comments} onChange={handleFieldChange} />
                        <Button variant="outlined" component="label" startIcon={<CloudUploadIcon />}>
                            Upload File
-                           <input type="file" hidden onChange={(e) => console.log("File Upload")} />
+                           <VisuallyHiddenInput type="file" hidden onChange={handleFileChange} />
                        </Button>
+                       <Typography>
+                           {fileName}
+                       </Typography>
+                       {uploading === 'uploading' && (
+                           <Box sx={{ width: '100%', marginTop: 2 }}>
+                               <LinearProgress variant="determinate" value={uploadProgress} />
+                           </Box>)}
                    </Stack>
                 );
             default:

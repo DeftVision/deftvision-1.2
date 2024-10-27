@@ -1,5 +1,6 @@
 const locations = [
     'Bountiful',
+    'Corporate',
     'Draper',
     'East Mesa',
     'Jordan Landing',

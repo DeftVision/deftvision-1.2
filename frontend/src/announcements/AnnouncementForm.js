@@ -1,6 +1,6 @@
 import { Box, Button, FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, Switch, Stack, TextField, Typography } from '@mui/material'
 import { useState } from 'react'
-import roles from '../utilities/roleSelect';
+import audience from '../utilities/audienceSelect';
 import priority from '../utilities/prioritySelect'
 
 const form_default = {
@@ -48,7 +48,7 @@ export default function AnnouncementForm({ onAnnouncementCreated }) {
     }
 
     return (
-        <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}} >
+        <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}}>
             <Paper elevation={8} width='100%' sx={{padding: 5, maxWidth: '1200px', width: '90%'}}>
             <Box
                 component='form'
@@ -112,9 +112,9 @@ export default function AnnouncementForm({ onAnnouncementCreated }) {
                                 textAlign: 'start'
                             }}
                         >
-                            {roles.map((role) => (
-                                <MenuItem key={role} value={role}>
-                                    {role}
+                            {audience.map((audience) => (
+                                <MenuItem key={audience} value={audience}>
+                                    {audience}
                                 </MenuItem>
                             ))}
                         </Select>

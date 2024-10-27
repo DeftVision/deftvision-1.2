@@ -8,6 +8,7 @@ import {
     InputLabel,
     LinearProgress,
     MenuItem,
+    Paper,
     Select,
     Stack,
     styled,
@@ -21,8 +22,15 @@ import {v4 as uuidv4} from "uuid";
 import locations from '../utilities/locationSelect'
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
+const getLocalISO = () => {
+    const now = new Date();
+    const offsetMs = now.getTimezoneOffset() * 60 * 1000;
+    const localTime = new Date(now.getTime() - offsetMs);
+    return localTime.toISOString().slice(0, 16);
+};
+
 const form_fields = {
-    date: new Date().toISOString().split('T')[0],
+    date: getLocalISO(),
     location: 'Corporate Office',
     comments: '',
     cashier: '',
@@ -180,11 +188,17 @@ export default function Evaluations() {
     console.log(formData);
 
     return (
-        <Box sx={{p: 3, display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 5}}>
-            <Box component='form' onSubmit={handleSubmit}>
+        <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}} >
+            <Paper elevation={8} width='100%' sx={{padding: 5, maxWidth: '1200px', width: '90%'}}>
+                <Box
+                    component='form'
+                    onSubmit={handleSubmit}
+                    noValidate
+                    sx={{marginTop: 4}}
+                >
                 <Stack direction='column' spacing={3}>
                     <TextField
-                        type='date'
+                        type='datetime-local'
                         value={formData.date}
                         onChange={(e) => {
                             setFormData({
@@ -205,6 +219,9 @@ export default function Evaluations() {
                                     ...formData,
                                     location: e.target.value
                                 })
+                            }}
+                            sx={{
+                                textAlign: 'start'
                             }}
                         >
                             {locations.map((location) => (
@@ -382,7 +399,7 @@ export default function Evaluations() {
 
                 </Stack>
             </Box>
-
+            </Paper>
         </Box>
 
     );

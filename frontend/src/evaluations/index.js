@@ -1,3 +1,3 @@
 export { default as EvaluationDataTable } from './EvaluationDataTable';
 export { default as EvaluationsTable } from './Evaluations';
-export { default as EvaluationForm } from './EvaluationForm';
+export { default as EvaluationFormSteps } from './EvaluationFormSteps';

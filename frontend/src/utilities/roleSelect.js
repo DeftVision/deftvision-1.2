@@ -1,5 +1,4 @@
 const roles = [
-    'All',
     'User',
     'Shopper',
     'Corporate',

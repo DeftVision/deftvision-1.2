@@ -1,5 +1,20 @@
-import { useState } from 'react';
-import { Box, Button, InputLabel, Step, StepButton, Stepper, TextField, Paper, Stack, FormControl, Select, MenuItem, FormControlLabel, Switch } from '@mui/material';
+import {useState} from 'react';
+import {
+    Box,
+    Button,
+    FormControl,
+    FormControlLabel,
+    InputLabel,
+    MenuItem,
+    Paper,
+    Select,
+    Stack,
+    Step,
+    StepButton,
+    Stepper,
+    Switch,
+    TextField
+} from '@mui/material';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import location from '../utilities/locationSelect'
 
@@ -32,10 +47,21 @@ export default function EvaluationForm() {
 
     const handleFieldChange = (e) => {
         const { name, value, type, checked } = e.target;
-        setFormData((prevData) => ({
-            ...formData,
-            [name]: type === 'checkbox' ? checked : value,
-        }));
+        setFormData((prevData) => {
+            const updatedData = {
+                ...prevData,
+                [name]: type === 'checkbox' ? checked : value,
+            };
+
+            if (['foodScore', 'serviceScore', 'cleanScore'].includes(name)) {
+                const food = parseFloat(updatedData.foodScore) || 0;
+                const clean = parseFloat(updatedData.cleanScore) || 0;
+                const service = parseFloat(updatedData.serviceScore) || 0;
+
+                updatedData.finalScore = ((food + service + clean) / 3).toFixed(1);
+            }
+            return updatedData;
+        })
     };
 
     const handleStep = (step) => () => {

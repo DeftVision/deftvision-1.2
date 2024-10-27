@@ -78,9 +78,6 @@ export default function ScoreDataTable() {
     })
 
     const filteredEvaluations = sortedEvaluations.filter((evaluation) => {
-        /*const matchesSearch = evaluation.location.toLowerCase().includes(searchQuery.toLowerCase());
-        const matchesLocation = filterLocation === 'All' || evaluation.location === filterLocation;*/
-        // return matchesSearch && matchesLocation;
         return evaluation.location.toLowerCase().includes(searchQuery.toLowerCase())
     })
 

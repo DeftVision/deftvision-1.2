@@ -18,7 +18,6 @@ import {Delete, Visibility, VisibilityOff, Search} from '@mui/icons-material'
 import {useState, useEffect} from 'react';
 import { useTheme } from '@mui/material/styles'
 import console from 'console-browserify';
-import * as React from "react";
 
 
 
@@ -202,7 +201,6 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
                                             backgroundColor: theme.palette.action.hover,
                                             color: theme.palette.mode === 'dark' ? '#000' : '#fff',
                                             cursor: 'default',
-
                                         }
                                     }}
                                 >
@@ -228,7 +226,6 @@ export default function AnnouncementDataTable({ refreshTrigger }) {
                                     </TableCell>
                                 </TableRow>
                             ))}
-
                         </TableBody>
                     </Table>
                 </TableContainer>

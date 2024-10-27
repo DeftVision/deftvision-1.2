@@ -12,7 +12,7 @@ export default function Evaluations() {
             <Stack direction='column' space={3} sx={{ width: '100%', maxWidth: '1200px'}}>
                 <Typography variant='overline' sx={{fontSize: '1rem'}}>Evaluation Management</Typography>
 
-                <EvaluationFormSteps onDocumentCreated={toggleRefresh} />
+                <EvaluationFormSteps onEvaluationCreated={toggleRefresh} />
                 <Box sx={{alignSelf: 'center', justifyContent: 'center', alignContent: 'center', width: '100%'}}>
                     <EvaluationDataTable refreshTrigger={refreshEvaluations}/>
                 </Box>

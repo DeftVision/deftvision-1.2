@@ -18,24 +18,16 @@ import {
     LinearProgress,
     Typography
 } from '@mui/material';
+import dateTimeConfiguration from '../utilities/dateTimeConfiguration'
 import {deleteObject, getDownloadURL, getStorage, ref, uploadBytesResumable} from 'firebase/storage';
 import CloudUploadIcon from '@mui/icons-material/CloudUpload';
 import {v4 as uuidv4} from 'uuid';
 import location from '../utilities/locationSelect'
 
-const getCurrentDateTime = () => {
-    const now = new Date();
-    const year = now.getFullYear();
-    const month = String(now.getMonth() + 1).padStart(2, '0');
-    const day = String(now.getDate()).padStart(2, '0');
-    const hours = String(now.getHours()).padStart(2, '0');
-    const minutes = String(now.getMinutes()).padStart(2, '0');
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-};
-
 
 const form_defaults = {
-    date: new Date().toISOString().slice(0, 16),
+    userId: '',
+    date: dateTimeConfiguration(),
     location: '',
     cashier: '',
     waitTime: '',
@@ -67,7 +59,8 @@ const VisuallyHiddenInput = styled('input')({
 
 
 
-export default function EvaluationForm() {
+export default function EvaluationForm({ triggerRefresh }) {
+    const userId = localStorage.getItem('userId')
     const [formData, setFormData] = useState(form_defaults);
     const [currentStep, setCurrentStep] = useState(0);
     const [completed, setCompleted] = useState({});
@@ -190,15 +183,17 @@ export default function EvaluationForm() {
             throw new Error('No file selected');
         }
     };
+    console.log(formData);
 
     const saveToDb = async () => {
-
-        let url = 'http://localhost:5000/api/evaluation/new/';
-        let method = 'POST';
+        setFormData((prevData) => ({
+            ...prevData,
+            userId: userId || prevData.userId
+        }))
 
         try {
-            const response = await fetch(url, {
-                method: method,
+            const response = await fetch('http://localhost:5000/api/evaluation/new/', {
+                method: 'POST',
                 body: JSON.stringify(formData),
                 headers: {
                     'Content-Type': 'application/json'
@@ -254,7 +249,7 @@ export default function EvaluationForm() {
                         <TextField name='foodScore' label='Food Score' type='number' value={formData.foodScore} onChange={handleFieldChange} />
                         <TextField name='cleanScore' label='Clean Score' type='number' value={formData.cleanScore} onChange={handleFieldChange} />
                         <TextField name='serviceScore' label='Service Score' type='number' value={formData.serviceScore} onChange={handleFieldChange} />
-                        <TextField name='finalScore' label='Final Score' type='number' value={formData.finalScore} readOnly />
+                        <TextField name='finalScore' label='Final Score' type='text' disabled value={formData.finalScore} readOnly />
                     </Stack>
                 );
             case 3:
@@ -280,7 +275,8 @@ export default function EvaluationForm() {
     }
 
     return (
-        <Paper sx={{ padding: 4, maxWidth: '600px', margin: 'auto'}}>
+        <Box width='100%' sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center', marginTop: 4}}>
+            <Paper elevation={8} width='100%' sx={{padding: 5, maxWidth: '1200px', width: '90%'}}>
             <Stepper nonLinear activeStep={currentStep} sx={{marginBottom: 4}}>
                 {steps.map((label, index) => (
                     <Step key={label} completed={completed[index]}>
@@ -303,6 +299,7 @@ export default function EvaluationForm() {
                 </Box>
             </form>
         </Paper>
+        </Box>
     );
 
 

@@ -162,7 +162,7 @@ export default function ScoresTrend() {
                 <CardContent sx={{backgroundColor: '#1976d2'}}>
                     {finalPercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {finalPercentageChange > 0 ? (<ArrowUpward style={{color: 'green'}}/>
+                            {finalPercentageChange > 0 ? (<ArrowUpward style={{color: '#0ee648'}}/>
                             ) : (
                                 <ArrowDownward style={{color: 'red'}}/>
                             )}

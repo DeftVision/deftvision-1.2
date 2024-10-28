@@ -13,16 +13,6 @@ const truncateLocation = (location) => location.substring(0, 2);
                 <Typography variant='overline' sx={{fontSize: '1rem', textAlign: 'left', marginLeft: 10}}>final scores</Typography>
                 <ResponsiveContainer width='100%' height={300}>
                     <RechartsBarChart data={mostRecentEvaluations} sx={{color: '#014012'}}>
-                       {/* <defs>
-                             Define the gradient from dark red to green
-                            <linearGradient id="barGradient" x1="0" y1="0" x2="0" y2="1">
-                                <stop offset="0%" stopColor="#32CD32" stopOpacity={1}/>
-                                 Green
-                                <stop offset="100%" stopColor="#8B0000" stopOpacity={1}/>
-                                 Dark Red
-                            </linearGradient>
-                        </defs>*/}
-                        {/*<CartesianGrid strokeDasharray={'3 3'}/>*/}
                         <XAxis
                             dataKey='location'
                             tickFormatter={truncateLocation}
@@ -37,7 +27,6 @@ const truncateLocation = (location) => location.substring(0, 2);
                                         color: '#000',
                                         padding: '4px',
                                         borderRadius: '5px',
-                                        // border: '1px solid #ccc'
                                     }}>
                                         <Typography>{`Location : ${evaluation.location}`}</Typography>
                                         <Typography>{`Date : ${new Date(evaluation.date).toLocaleDateString()}`}</Typography>

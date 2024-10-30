@@ -1,7 +1,6 @@
-import { Box, Button,  FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, Stack, Switch, TextField, Typography } from '@mui/material';
-import { useState, useEffect } from 'react';
+import { Box, Button,  FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, Stack, Switch, TextField } from '@mui/material';
+import { useState } from 'react';
 import roles from '../utilities/roleSelect'
-import locationSelect from '../utilities/locationSelect'
 import locations from "../utilities/locationSelect";
 
 
@@ -45,12 +44,12 @@ export default function UserForm( { onUserCreated }) {
             if(response.ok) {
                 onUserCreated();
             } else {
-                console.log('error posting announcement')
+                console.log('error saving user')
             }
             console.log(formData)
 
         } catch (error) {
-
+            console.error(error);
         }
     }
 

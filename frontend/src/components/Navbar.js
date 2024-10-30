@@ -14,7 +14,7 @@ import {
     Typography,
 } from '@mui/material'
 import MenuIcon from '@mui/icons-material/Menu';
-import {AnalyticsOutlined, AnnouncementOutlined, Brightness4, Brightness7, DocumentScanner, SpaceDashboardOutlined, HomeOutlined, PeopleOutlined, LoginOutlined} from '@mui/icons-material';
+import {AnalyticsOutlined, AnnouncementOutlined, Brightness4, Brightness7, DocumentScanner, CalendarMonth, SpaceDashboardOutlined, PeopleOutlined, LoginOutlined} from '@mui/icons-material';
 import {ThemeContext} from '../context/ThemeContext';
 import useMediaQuery from '@mui/material/useMediaQuery'
 import {useTheme} from '@mui/material/styles'
@@ -32,12 +32,13 @@ export default function Navbar() {
 
     const menuItems = [
         { text: 'Login', icon: <LoginOutlined /> },
-        { text: 'Home', icon: <HomeOutlined /> },
         { text: 'Dashboard', icon: <SpaceDashboardOutlined /> },
         { text: 'Announcements', icon: <AnnouncementOutlined /> },
         { text: 'Documents', icon: <DocumentScanner /> },
         { text: 'Evaluations', icon: <AnalyticsOutlined /> },
         { text: 'Users', icon: <PeopleOutlined /> },
+        { text: 'Employees', icon: <PeopleOutlined /> },
+        { text: 'Schedule', icon: <CalendarMonth /> },
     ]
 
     return (

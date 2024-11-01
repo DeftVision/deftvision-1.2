@@ -200,5 +200,48 @@ exports.getUserData = async (req, res) => {
     }
 }
 
+exports.recoverPassword = async (req, res) => {
+    try {
+        const recovery = await userModel.findOne({username})
+    } catch (error) {
+        console.log('there was an error', error);
+    }
+}
+
+exports.resetPassword = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {password} = req.body;
+        const hashedPassword = await bcrypt.hash(password, 14);
+
+        const user = await userModel.findOne({ username })
+        if (!user) {
+            return res.send({
+                message: 'username isn\'t found',
+            })
+        }
+
+        const isMatch = await bcrypt.compare(password, user.password);
+        if (!isMatch) {
+            console.log('wrong credentials');
+            return res.send({
+                error: 'Invalid username or password',
+
+            })
+        } else {
+            const token = jwt.sign({userId: user._id}, SECRET_KEY, {expiresIn: 3600});
+            res.json({token})
+        }
+
+
+        return res.send({
+            message: 'User registered successfully',
+        })
+
+    } catch (error) {
+        console.log('there was an error', error);
+    }
+}
+
 
 

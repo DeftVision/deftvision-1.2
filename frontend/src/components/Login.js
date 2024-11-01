@@ -2,6 +2,7 @@ import { useState} from 'react'
 import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
 import { useNavigate } from 'react-router-dom'
 import { jwtDecode }  from 'jwt-decode';
+import { Link } from 'react-router-dom'
 
 
 export default function Login() {
@@ -86,6 +87,15 @@ export default function Login() {
                     <Button type='submit' variant='contained' sx={{marginTop: 3, alignContent: 'center'}}>
                         Login
                     </Button>
+
+                <Button
+                    variant='text'
+                    sx={{marginTop: 3, alignSelf: 'center'}}
+                    component={Link}
+                    to='/forgot-password'
+                >
+                    forgot password
+                </Button>
                 </Stack>
             </Box>
         </div>

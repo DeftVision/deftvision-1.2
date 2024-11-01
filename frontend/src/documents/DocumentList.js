@@ -1,4 +1,4 @@
-import {Box, Paper, Typography, List, ListItem, ListItemText, Button, Tab, Tabs, Modal, Stack} from '@mui/material'
+import { Box, Paper, Typography, List, ListItem, ListItemText, Button, Tab, Tabs, Modal, Stack } from '@mui/material'
 
 export default function DocumentList({ documents, onDownload, onView }) {
 

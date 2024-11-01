@@ -35,6 +35,7 @@ export default function Navbar() {
         { text: 'Dashboard', icon: <SpaceDashboardOutlined /> },
         { text: 'Announcements', icon: <AnnouncementOutlined /> },
         { text: 'Documents', icon: <DocumentScanner /> },
+        { text: 'EndUserDocuments', icon: <DocumentScanner /> },
         { text: 'Evaluations', icon: <AnalyticsOutlined /> },
         { text: 'Users', icon: <PeopleOutlined /> },
         { text: 'Employees', icon: <PeopleOutlined /> },

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { Box } from '@mui/material';
-import { Route, Routes } from 'react-router-dom';
+import {Navigate, Route, Routes} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './utilities/store';
 
@@ -15,6 +15,7 @@ import Announcements from './announcements/Announcements';
 import Users from './users/Users';
 import Employees from './employees/Employees';
 import Schedules from './schedules/Schedules';
+import ForgotPassword from "./components/ForgotPassword";
 
 
 function App() {
@@ -27,51 +28,20 @@ function App() {
                 <Box>
                     <div className="App">
                         <Routes>
+                            {/*<Route path='/login' element={!isAuthenticated ? <Login /> : <Navigate to='/dashboard'/>} />*/}
                             <Route path='/login' element={<Login/>}/>
                             <Route path='*' element={<Error/>}/>
-
-                            <Route path='/announcements' element={
-                                <PrivateRoute>
-                                    <Announcements/>
-                                </PrivateRoute>
-                            }/>
-                            <Route path='/evaluations' element={
-                                <PrivateRoute>
-                                    <Evaluations/>
-                                </PrivateRoute>
-                            }/>
-                            <Route path='/documents' element={
-                                <PrivateRoute>
-                                    <Documents/>
-                                </PrivateRoute>
-                            }/>
-
-                            <Route path='/enduserdocuments' element={
-                                <PrivateRoute>
-                                    <EndUserDocuments/>
-                                </PrivateRoute>
-                            }/>
-
-                            <Route path='/dashboard' element={
-                                <PrivateRoute>
-                                    <Dashboard/>
-                                </PrivateRoute>
-                            }/>
-                            <Route path='/employees' element={
-                                <PrivateRoute>
-                                    <Employees/>
-                                </PrivateRoute>
-                            }/>
-                            <Route path='/users' element={
-                                <PrivateRoute>
-                                    <Users/>
-                                </PrivateRoute>
-                            }/>
-                            <Route path='/schedule' element={
-                                <PrivateRoute>
-                                    <Schedules/>
-                                </PrivateRoute>
-                            }/>
+                            <Route path='/forgot-password' elemen={<ForgotPassword/>} />
+                            {/*<Route element={<PrivateRoute />}>*/}
+                                <Route path='/announcements' element={<Announcements/>} />
+                                <Route path='/evaluations' element={<Evaluations/>} />
+                                <Route path='/documents' element={<Documents/>} />
+                                <Route path='/enduserdocuments' element={<EndUserDocuments/>} />
+                                <Route path='/dashboard' element={<Dashboard/>} />
+                                <Route path='/employees' element={<Employees/>}/>
+                                <Route path='/users' element={<Users/>} />
+                                <Route path='/schedule' element={<Schedules/>} />
+                            {/*</Route>*/}
                         </Routes>
                     </div>
                 </Box>

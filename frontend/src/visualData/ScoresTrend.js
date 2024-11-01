@@ -152,17 +152,17 @@ export default function ScoresTrend() {
         <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
             {/* final score */}
             <Card sx={{minWidth: 300, color: '#fff', margin: 2, position: 'relative'}}>
-                <CardHeader sx={{backgroundColor: '#aaa', color: '#fff'}}>
+                <CardHeader sx={{backgroundColor: '#1976d2', color: '#fff'}}>
                     {/* title section */}
                     <Typography variant='overline' sx={{fontSize: '1rem', marginBottom: 1 }}>
                         Final Score
                     </Typography>
 
                 </CardHeader>
-                <CardContent sx={{backgroundColor: '#skyblue'}}>
+                <CardContent sx={{backgroundColor: '#1976d2'}}>
                     {finalPercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {finalPercentageChange > 0 ? (<ArrowUpward style={{color: '#aaa'}}/>
+                            {finalPercentageChange > 0 ? (<ArrowUpward sx={{color: '#eee'}}/>
                             ) : (
                                 <ArrowDownward style={{color: 'darkred'}}/>
                             )}
@@ -176,7 +176,6 @@ export default function ScoresTrend() {
                     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 150}}>
                         <ResponsiveContainer width='100%' height={100}>
                             <LineChart data={averageFinalScores}>
-                                {/*<XAxis dataKey='date' stroke='#fff'/>*/}
                                 <Line type='monotone' dataKey='avgFinalScore' stroke='#fff' strokeWidth={2}
                                       dot={false}/>
                             </LineChart>
@@ -205,7 +204,7 @@ export default function ScoresTrend() {
                 <CardContent sx={{backgroundColor: '#1976d2'}}>
                     {foodPercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {foodPercentageChange > 0 ? (<ArrowUpward style={{color: 'green'}}/>
+                            {foodPercentageChange > 0 ? (<ArrowUpward style={{color: '#eee'}}/>
                             ) : (
                                 <ArrowDownward style={{color: 'red'}}/>
                             )}
@@ -247,7 +246,7 @@ export default function ScoresTrend() {
                 <CardContent sx={{backgroundColor: '#1976d2'}}>
                     {cleanPercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {cleanPercentageChange > 0 ? (<ArrowUpward style={{color: 'green'}}/>
+                            {cleanPercentageChange > 0 ? (<ArrowUpward style={{color: '#eee'}}/>
                             ) : (
                                 <ArrowDownward style={{color: 'red'}}/>
                             )}
@@ -287,7 +286,7 @@ export default function ScoresTrend() {
                 <CardContent sx={{backgroundColor: '#1976d2'}}>
                     {servicePercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {servicePercentageChange > 0 ? (<ArrowUpward style={{color: 'green'}}/>
+                            {servicePercentageChange > 0 ? (<ArrowUpward style={{color: '#eee'}}/>
                             ) : (
                                 <ArrowDownward style={{color: 'red'}}/>
                             )}

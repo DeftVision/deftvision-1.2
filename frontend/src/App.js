@@ -16,6 +16,7 @@ import Users from './users/Users';
 import Employees from './employees/Employees';
 import Schedules from './schedules/Schedules';
 import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
 
 
 function App() {
@@ -31,7 +32,8 @@ function App() {
                             {/*<Route path='/login' element={!isAuthenticated ? <Login /> : <Navigate to='/dashboard'/>} />*/}
                             <Route path='/login' element={<Login/>}/>
                             <Route path='*' element={<Error/>}/>
-                            <Route path='/forgot-password' elemen={<ForgotPassword/>} />
+                            <Route path='/forgot-password' element={<ForgotPassword/>} />
+                            <Route path='/reset-password' element={<ResetPassword/>} />
                             {/*<Route element={<PrivateRoute />}>*/}
                                 <Route path='/announcements' element={<Announcements/>} />
                                 <Route path='/evaluations' element={<Evaluations/>} />

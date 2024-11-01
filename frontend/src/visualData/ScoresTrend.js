@@ -152,19 +152,19 @@ export default function ScoresTrend() {
         <Box sx={{display: 'flex', flexWrap: 'wrap', justifyContent: 'center'}}>
             {/* final score */}
             <Card sx={{minWidth: 300, color: '#fff', margin: 2, position: 'relative'}}>
-                <CardHeader sx={{backgroundColor: '#1976d2', color: '#fff'}}>
+                <CardHeader sx={{backgroundColor: '#aaa', color: '#fff'}}>
                     {/* title section */}
                     <Typography variant='overline' sx={{fontSize: '1rem', marginBottom: 1 }}>
                         Final Score
                     </Typography>
 
                 </CardHeader>
-                <CardContent sx={{backgroundColor: '#1976d2'}}>
+                <CardContent sx={{backgroundColor: '#skyblue'}}>
                     {finalPercentageChange !== null && (
                         <Box sx={{position: 'absolute', top: 17, right: 16, display: 'flex', alignItems: 'center'}}>
-                            {finalPercentageChange > 0 ? (<ArrowUpward style={{color: '#0ee648'}}/>
+                            {finalPercentageChange > 0 ? (<ArrowUpward style={{color: '#aaa'}}/>
                             ) : (
-                                <ArrowDownward style={{color: 'red'}}/>
+                                <ArrowDownward style={{color: 'darkred'}}/>
                             )}
                             <Typography sx={{fontSize: '1rem', marginLeft: '4px'}}>
                                 {Math.abs(finalPercentageChange)} %
@@ -217,7 +217,6 @@ export default function ScoresTrend() {
                     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 150}}>
                         <ResponsiveContainer width='100%' height={100}>
                             <LineChart data={averageFoodScores}>
-                                {/*<XAxis dataKey='date' stroke='#fff'/>*/}
                                 <Line type='monotone' dataKey='avgFoodScore' stroke='#fff' strokeWidth={2}
                                       dot={false}/>
                             </LineChart>

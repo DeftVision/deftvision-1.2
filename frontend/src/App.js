@@ -1,8 +1,9 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Box } from '@mui/material';
 import {Navigate, Route, Routes} from 'react-router-dom';
 import { Provider } from 'react-redux';
 import store from './utilities/store';
+import { AuthProvider, AuthContext } from './context/AuthContext';
 
 import { Error } from './pages/index';
 import { Dashboard, Login, Navbar } from './components/index';
@@ -19,36 +20,43 @@ import ForgotPassword from "./components/ForgotPassword";
 import ResetPassword from "./components/ResetPassword";
 
 
-function App() {
-
+function AppContent() {
+    const { isAuthenticated } = useContext(AuthContext);
     return (
+        <Box sx={{marginBottom: 10}}>
+            <Navbar/>
+        <Box>
+            <div className="App">
+                <Routes>
+                    <Route path='/login' element={!isAuthenticated ? <Login /> : <Navigate to='/dashboard'/>} />
+                    <Route path='*' element={<Error/>}/>
+                    <Route path='/forgot-password' element={<ForgotPassword/>} />
+                    <Route path='/reset-password' element={<ResetPassword/>} />
+                    <Route element={<PrivateRoute />}>
+                        <Route path='/announcements' element={<Announcements/>} />
+                        <Route path='/evaluations' element={<Evaluations/>} />
+                        <Route path='/documents' element={<Documents/>} />
+                        <Route path='/end-user-documents' element={<EndUserDocuments/>} />
+                        <Route path='/dashboard' element={<Dashboard/>} />
+                        <Route path='/employees' element={<Employees/>}/>
+                        <Route path='/users' element={<Users/>} />
+                        <Route path='/schedule' element={<Schedules/>} />
+                    </Route>
+                </Routes>
+            </div>
+        </Box>
+        </Box>
+    );
+}
+
+
+function App() {
+    return (
+        <AuthProvider>
         <Provider store={store}>
-            {/* Moved Provider here to ensure all components have access to the Redux store */}
-            <Box sx={{marginBottom: 10}}>
-                <Navbar/>
-                <Box>
-                    <div className="App">
-                        <Routes>
-                            {/*<Route path='/login' element={!isAuthenticated ? <Login /> : <Navigate to='/dashboard'/>} />*/}
-                            <Route path='/login' element={<Login/>}/>
-                            <Route path='*' element={<Error/>}/>
-                            <Route path='/forgot-password' element={<ForgotPassword/>} />
-                            <Route path='/reset-password' element={<ResetPassword/>} />
-                            {/*<Route element={<PrivateRoute />}>*/}
-                                <Route path='/announcements' element={<Announcements/>} />
-                                <Route path='/evaluations' element={<Evaluations/>} />
-                                <Route path='/documents' element={<Documents/>} />
-                                <Route path='/enduserdocuments' element={<EndUserDocuments/>} />
-                                <Route path='/dashboard' element={<Dashboard/>} />
-                                <Route path='/employees' element={<Employees/>}/>
-                                <Route path='/users' element={<Users/>} />
-                                <Route path='/schedule' element={<Schedules/>} />
-                            {/*</Route>*/}
-                        </Routes>
-                    </div>
-                </Box>
-            </Box>
+                <AppContent />
         </Provider>
+        </AuthProvider>
     );
 }
 

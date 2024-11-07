@@ -1,24 +1,22 @@
-import { useState} from 'react'
-import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material'
-import { useNavigate } from 'react-router-dom'
-import { jwtDecode }  from 'jwt-decode';
-import { Link } from 'react-router-dom'
-
+import { useContext, useState } from 'react';
+import { Alert, Box, Button, Stack, TextField, Typography } from '@mui/material';
+import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
+import { AuthContext } from '../context/AuthContext'; // Import AuthContext
 
 export default function Login() {
-    const [username, setUsername] = useState('')
-    const [password, setPassword] = useState('')
-    const [error, setError] = useState('')
-    const [success, setSuccess] = useState(false)
+    const { login } = useContext(AuthContext);
+    const [username, setUsername] = useState('');
+    const [password, setPassword] = useState('');
+    const [error, setError] = useState('');
     const navigate = useNavigate();
 
     const handleLogin = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         setError('');
 
-
-        if(!username || !password) {
-            setError('username and password are required fields')
+        if (!username || !password) {
+            setError('Username and password are required fields');
             return;
         }
 
@@ -32,70 +30,57 @@ export default function Login() {
             });
             const data = await response.json();
 
-            if(response.ok) {
+            if (response.ok) {
                 const { token } = data;
-                localStorage.setItem('token', token);
-
-                const decodedToken = jwtDecode(token);
-                const userId = decodedToken.userId;
-                localStorage.setItem('userId', userId);
-
-                setSuccess(true);
-                navigate('/dashboard')
+                login(token); // Update the authentication state
+                navigate('/dashboard'); // Redirect on successful login
             } else {
-                setError(data.error || 'login failed miserably')
+                setError(data.error || 'Login failed miserably');
             }
         } catch (error) {
-            setError('oops... wait a few seconds try again');
+            setError('Oops... wait a few seconds and try again');
         }
     };
 
     return (
         <div>
-            <Box component='form' onSubmit={handleLogin} sx={{maxWidth: 400, margin: 'auto', padding: 2}}>
-                <Stack direction='column' spacing={3}>
-                    <Typography variant='overline' sx={{fontSize: '1rem', justifyContent: 'center'}} gutterBottom>
+            <Box component='form' onSubmit={handleLogin} sx={{ maxWidth: 400, margin: 'auto', padding: 2 }}>
+                <Stack direction='column' spacing={3} sx={{ marginTop: 5 }}>
+                    <Typography variant='overline' sx={{ fontSize: '1rem', justifyContent: 'center', alignSelf: 'center' }} gutterBottom>
                         Login
                     </Typography>
 
                     {error && (
-                        <Alert severity='error' sx={{marginBottom: 2}}>
+                        <Alert severity='error' sx={{ marginBottom: 2 }}>
                             {error}
                         </Alert>
                     )}
 
-                    {success && (
-                        <Alert severity='success' sx={{marginBottom: 2}}>
-                            Login successful
-                        </Alert>
-                    )}
-
                     <TextField
-                        label='username'
+                        label='Username'
                         value={username}
                         onChange={(e) => setUsername(e.target.value)}
-
                     />
                     <TextField
-                        label='password'
+                        label='Password'
                         type='password'
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                         margin="normal"
                     />
 
-                    <Button type='submit' variant='contained' sx={{marginTop: 3, alignContent: 'center'}}>
+                    <Button type='submit' variant='contained' sx={{ marginTop: 3, alignContent: 'center' }}>
                         Login
                     </Button>
 
-                <Button
-                    variant='text'
-                    sx={{marginTop: 3, alignSelf: 'center'}}
-                    component={Link}
-                    to='/forgot-password'
-                >
-                    forgot password
-                </Button>
+                    <Button
+                        variant='text'
+                        sx={{ marginTop: 3, alignSelf: 'center' }}
+                        component={Link}
+                        to='/forgot-password'
+                    >
+                        Forgot password
+                    </Button>
                 </Stack>
             </Box>
         </div>

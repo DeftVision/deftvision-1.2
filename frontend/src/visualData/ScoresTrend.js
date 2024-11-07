@@ -298,7 +298,6 @@ export default function ScoresTrend() {
                     <Box sx={{display: 'flex', justifyContent: 'center', alignItems: 'center', height: 150}}>
                         <ResponsiveContainer width='100%' height={100}>
                             <LineChart data={averageServiceScores}>
-                                {/*<XAxis dataKey='date' stroke='#fff'/>*/}
                                 <Line type='monotone' dataKey='avgServiceScore' stroke='#fff' strokeWidth={2}
                                       dot={false}/>
                             </LineChart>
